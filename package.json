@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:db": "vitest run --config vitest.db.config.mts",
+    "seed:kalui": "node scripts/seed-kalui.mts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
