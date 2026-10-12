@@ -29,7 +29,7 @@ async function LoginForm({ searchParams }: Pick<PageProps<"/login">, "searchPara
   const failed = params.error !== undefined;
 
   const viewer = await getViewer();
-  if (viewer) redirect(viewer.profile ? next : "/onboarding");
+  if (viewer) redirect(viewer.profile ? next : `/onboarding?next=${encodeURIComponent(next)}`);
 
   return (
     <div className="flex flex-col gap-3">

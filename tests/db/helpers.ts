@@ -28,8 +28,11 @@ export type TestUser = { id: string; handle: string; db: SupabaseClient };
 /** 테스트 실행마다 겹치지 않는 접두사 */
 export const runId = randomBytes(3).toString("hex");
 
-/** 임시 사용자를 만들고 프로필을 넣은 뒤, 그 사용자로 로그인한 클라이언트를 돌려준다. */
-export async function createTestUser(label: string): Promise<TestUser> {
+/**
+ * 임시 사용자를 만들고 프로필을 넣은 뒤, 그 사용자로 로그인한 클라이언트를 돌려준다.
+ * profile: false면 온보딩(필명·약관 동의)을 마치지 않은 사용자를 만든다.
+ */
+export async function createTestUser(label: string, opts: { profile?: boolean } = {}): Promise<TestUser> {
   const email = `ff-test-${runId}-${label}@forkfiction.test`;
   const password = randomBytes(18).toString("base64url");
   const handle = `t_${runId}_${label}`;
@@ -38,13 +41,15 @@ export async function createTestUser(label: string): Promise<TestUser> {
   if (created.error) throw created.error;
   const id = created.data.user.id;
 
-  const profile = await admin.from("profiles").insert({
-    id,
-    handle,
-    display_name: `테스트 ${label}`,
-    terms_agreed_at: new Date().toISOString(),
-  });
-  if (profile.error) throw profile.error;
+  if (opts.profile !== false) {
+    const profile = await admin.from("profiles").insert({
+      id,
+      handle,
+      display_name: `테스트 ${label}`,
+      terms_agreed_at: new Date().toISOString(),
+    });
+    if (profile.error) throw profile.error;
+  }
 
   const db = createClient(url!, anonKey!, noSession);
   const signedIn = await db.auth.signInWithPassword({ email, password });
