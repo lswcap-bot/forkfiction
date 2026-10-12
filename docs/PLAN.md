@@ -118,7 +118,8 @@ AI 갈래 도우미는 차별점이 될 기능이지만 MVP에서는 뺀다. API
 
 **F8. 알림**
 
-- 내 작품에서 새 갈래가 생기면, 내 갈래가 별을 받거나 정사로 인정되면 사이트 안 알림(종 아이콘).
+- 내 작품에서 새 갈래가 공개되면, 내 갈래가 별을 받거나 정사로 인정되면 사이트 안 알림(종 아이콘).
+- 새 갈래 알림은 갈래를 만들 때가 아니라 **갈래가 처음 공개될 때** 보낸다. 갈래는 임시 저장 상태로 만들어지므로, 만들 때 알리면 원작자가 아직 읽을 수 없는 갈래를 알림으로 받게 된다. (2단계에서 결정, 4단계 공개 기능에서 반영)
 
 **F9. 신고와 관리**
 
@@ -222,9 +223,16 @@ create table chapters (
 );
 ```
 
-갈래 만들기는 데이터베이스 함수 `fork_work(source_work_id, at_position, title, note)` 하나로 처리한다. 함수 안에서 works 한 줄을 만들고, 1\~N장의 chapters를 같은 head\_revision\_id로 복사하고(1\~N−1은 inherited, N은 modified 대기), 원작의 fork\_count를 올리고, 원작자에게 알림을 넣는다. 한 트랜잭션이라 중간에 실패해도 반쯤 갈래가 남지 않는다.
+갈래 만들기는 데이터베이스 함수 `fork_work(source_work_id, at_position, title, note)` 하나로 처리한다. 함수 안에서 works 한 줄을 만들고, 1\~N장의 chapters를 같은 head\_revision\_id로 복사하고(1\~N−1은 inherited, N은 modified 대기), 원작의 fork\_count를 올린다. 원작자 알림은 fork\_work가 아니라 갈래가 처음 공개될 때 넣는다(F8). 한 트랜잭션이라 중간에 실패해도 반쯤 갈래가 남지 않는다.
 
 권한은 Supabase RLS(행 단위 보안)로 건다. 공개 작품은 누구나 읽고, 작품·장·수정본 쓰기는 owner만, revisions는 누구도 수정·삭제할 수 없다(새로 쌓기만). is\_canon은 뿌리 원작자만 바꾼다.
+
+**2단계에서 다음 단계로 넘긴 일**
+
+- [ ] (4단계) 갈림점 자동 갱신: 물려받은 장을 고치거나 지우면 `fork_chapter_position`을 '처음으로 달라진 장'으로 갱신한다. 지금은 inherited 장의 head가 바뀌면 state만 modified로 바뀐다(`chapters_guard` 트리거).
+- [ ] (4단계) 장 저장 함수: 지금은 revisions insert와 chapters.head\_revision\_id 갱신이 두 번의 요청이라, 중간에 끊기면 head가 옛 수정본에 머문다. 수정본 쌓기와 head 옮기기를 DB 함수 하나로 한 번에 처리한다.
+- [ ] (4단계) 갈래 공개 때 원작자 알림: `fork_work` 안의 'fork' 알림을 빼고, 갈래가 처음 public이 될 때 한 번만 넣는다(F8). 비공개로 돌렸다가 다시 공개해도 알림은 한 번만. tests/db/fork.test.ts의 알림 검사도 함께 바꾼다.
+- [ ] (6단계) 관리자 숨김 함수: 지금 hidden 전환과 복구는 관리 역할(service role)만 할 수 있다. /admin에서 쓸, `is_admin()`을 확인하는 숨김·복구 함수를 만든다.
 
 ## 기술 스택과 구조
 
@@ -347,7 +355,7 @@ PLAN.md의 F5, F6을 만들자. 비교는 jsdiff로 문단 단위 나란히 보�
 
 ```text
 PLAN.md의 F7, F8, F9를 구현해줘. star_count·fork_count는 DB 트리거로 유지하고,
-알림은 fork_work와 별·정사 변경 때 쌓이게 해. /admin은 profiles.is_admin인 사람만 들어갈 수 있게.
+알림은 갈래 공개와 별·정사 변경 때 쌓이게 해. /admin은 profiles.is_admin인 사람만 들어갈 수 있게.
 ```
 
 7단계 — 출시 준비
@@ -377,6 +385,7 @@ PLAN.md의 F7, F8, F9를 구현해줘. star_count·fork_count는 DB 트리거로
 ## 꼭 지킬 규칙
 - revisions는 쌓기만 한다. 수정·삭제 코드를 만들지 않는다.
 - 갈래 생성은 fork_work() DB 함수로만 한다.
+- 새 갈래 알림은 갈래를 만들 때가 아니라 처음 공개될 때 원작자에게 보낸다.
 - 계보 표기는 어떤 화면에서도 숨기거나 지울 수 없다.
 - 사용자 MD는 반드시 rehype-sanitize를 거쳐 렌더링한다.
 - service role 키는 서버 코드에서만 쓴다.
