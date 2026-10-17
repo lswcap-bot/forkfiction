@@ -16,7 +16,11 @@ export function GoogleButton({ next }: { next: string }) {
 
     const { error } = await createClient().auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: callback.toString() },
+      options: {
+        redirectTo: callback.toString(),
+        // 이미 구글에 로그인돼 있어도 매번 계정을 고르게 한다(여러 계정을 쓰는 사람)
+        queryParams: { prompt: "select_account" },
+      },
     });
     // 성공하면 구글 화면으로 넘어가므로 여기로 돌아오지 않는다.
     if (error) {
