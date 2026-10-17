@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PillLink, SegmentedNav, StatRow } from "@/components/ff";
+import { PillLink, SegmentedNav } from "@/components/ff";
 import { WorkCardGrid } from "@/components/work-card";
 import { cn } from "@/lib/utils";
 import { getSiteStats, getWorksPage } from "@/lib/discover";
@@ -43,24 +43,16 @@ export default function WorksPage({ searchParams }: PageProps<"/works">) {
 
 async function WorksList({ searchParams }: Pick<PageProps<"/works">, "searchParams">) {
   const q = parseWorksQuery(await searchParams);
+  // 탭 알약의 개수는 홈 통계와 같은 site_stats로 센다
   const [{ works, total }, stats] = await Promise.all([getWorksPage(q), getSiteStats()]);
   const pages = Math.ceil(total / WORKS_PAGE_SIZE);
   const tabCount = { all: stats.originals + stats.forks, original: stats.originals, fork: stats.forks };
 
   return (
     <>
-      <header className="flex flex-col gap-5 pt-6 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-8 sm:pt-10">
-        <div className="flex flex-col gap-1.5">
-          <p className="text-[13px] font-medium text-ink-3">작품 둘러보기</p>
-          <h1 className="text-[28px] leading-tight font-bold tracking-[-0.05em] sm:text-4xl">전체 목록</h1>
-        </div>
-        <StatRow
-          items={[
-            { label: "원작", value: stats.originals },
-            { label: "갈래", value: stats.forks },
-            { label: "이번 주 새 갈래", value: stats.newForksWeek },
-          ]}
-        />
+      <header className="flex flex-col gap-1.5 pt-6 sm:pt-10">
+        <p className="text-[13px] font-medium text-ink-3">작품 둘러보기</p>
+        <h1 className="text-[28px] leading-tight font-bold tracking-[-0.05em] sm:text-4xl">전체 목록</h1>
       </header>
 
       <nav className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" aria-label="작품 종류">
