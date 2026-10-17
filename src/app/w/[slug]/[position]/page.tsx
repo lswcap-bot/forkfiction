@@ -65,6 +65,18 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
             <span className="mr-2 text-muted-foreground">{chapter.position}장</span>
             {chapter.title}
           </h1>
+          {/* 갈래의 장: 고친 장은 원작과 비교, 새로 쓴 장은 원작에 없는 장 */}
+          {work.parent_work_id !== null && chapter.state !== "inherited" && (
+            <p className="text-sm text-muted-foreground">
+              {chapter.state === "modified" ? (
+                <Link href={`${base}/${chapter.position}/compare`} className="underline underline-offset-4 hover:text-foreground">
+                  원작과 비교
+                </Link>
+              ) : (
+                "원작에 없는 장"
+              )}
+            </p>
+          )}
         </header>
 
         <ReadingSize>
@@ -121,7 +133,14 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
               viewer={!viewer ? "anon" : !viewer.profile ? "onboarding" : "ready"}
               returnTo={`${base}/${chapter.position}`}
             />
-            <p className="text-sm text-muted-foreground">이 장에서 갈라진 갈래 {forkCount.toLocaleString()}개</p>
+            {/* 갈래 지도와 같은 기준: 이 작품의 이 장에서 직접 갈라진 공개 갈래 */}
+            {forkCount > 0 ? (
+              <Link href={`${base}/tree`} className="text-sm text-muted-foreground underline-offset-4 hover:underline">
+                이 장에서 갈라진 갈래 {forkCount.toLocaleString()}개 · 갈래 지도
+              </Link>
+            ) : (
+              <p className="text-sm text-muted-foreground">이 장에서 갈라진 갈래 0개</p>
+            )}
           </section>
         )}
       </article>

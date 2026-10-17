@@ -10,6 +10,7 @@ import { aiUsageLabel, CHAPTER_STATES, licenseLabel } from "@/lib/work-meta";
 import { getChapterList, getLineage, getWorkBySlug } from "@/lib/works";
 import { DeleteWorkButton } from "./delete-work-button";
 import { DraftPanel } from "./draft-panel";
+import { WorkTabs } from "./work-tabs";
 
 // 작품 대문: 제목, 작가, 계보 줄, 소개, 라이선스, 별, 장 목록. 탭: 목차 · 갈래 지도
 export default function WorkPage({ params }: PageProps<"/w/[slug]">) {
@@ -98,15 +99,7 @@ async function WorkCover({ params }: Pick<PageProps<"/w/[slug]">, "params">) {
         />
       )}
 
-      <nav className="flex gap-1 border-b" aria-label="작품 탭">
-        <span aria-current="page" className="-mb-px border-b-2 border-foreground px-3 py-2 text-sm font-medium">
-          목차
-        </span>
-        {/* 갈래 지도는 5단계에서 만든다 */}
-        <span className="px-3 py-2 text-sm text-muted-foreground" title="5단계에서 만듭니다">
-          갈래 지도 <span className="text-xs">(준비 중)</span>
-        </span>
-      </nav>
+      <WorkTabs slug={work.slug} current="toc" />
 
       <section aria-label="목차">
         {chapters.length === 0 ? (

@@ -14,6 +14,7 @@ export type WorkSummary = {
   allow_fork: boolean;
   ai_usage: string;
   parent_work_id: string | null;
+  root_work_id: string;
   fork_chapter_position: number | null;
   fork_note: string | null;
   is_canon: boolean;
@@ -39,7 +40,7 @@ export type LineageItem = {
 };
 
 const WORK_COLUMNS =
-  "id, slug, title, summary, license, allow_fork, ai_usage, parent_work_id, fork_chapter_position, fork_note, " +
+  "id, slug, title, summary, license, allow_fork, ai_usage, parent_work_id, root_work_id, fork_chapter_position, fork_note, " +
   "is_canon, visibility, star_count, fork_count, first_published_at, owner_id, " +
   "owner:profiles!works_owner_id_fkey(handle, display_name)";
 
@@ -178,4 +179,70 @@ export async function getRevision(revisionId: string) {
     .eq("id", revisionId)
     .maybeSingle();
   return data;
+}
+
+export type CompareChapter = {
+  position: number;
+  state: ChapterState;
+  title: string;
+  body: string;
+  /** 갈라질 때 물려받은 원작 수정본. 새로 쓴 장이면 null */
+  origin: { title: string; body: string } | null;
+};
+
+/** 비교 화면: 갈래의 장과 그 장이 처음 가져온 원작 수정본(origin_revision_id) */
+export async function getCompareChapter(workId: string, position: number): Promise<CompareChapter | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("chapters")
+    .select(
+      "position, state, head:revisions!chapters_head_revision_id_fkey(title, body_md), " +
+        "origin:revisions!chapters_origin_revision_id_fkey(title, body_md)",
+    )
+    .eq("work_id", workId)
+    .eq("position", position)
+    .maybeSingle<{
+      position: number;
+      state: ChapterState;
+      head: { title: string; body_md: string };
+      origin: { title: string; body_md: string } | null;
+    }>();
+  if (!data) return null;
+  return {
+    position: data.position,
+    state: data.state,
+    title: data.head.title,
+    body: data.head.body_md,
+    origin: data.origin && { title: data.origin.title, body: data.origin.body_md },
+  };
+}
+
+export type TreeEntry = {
+  id: string;
+  slug: string;
+  title: string;
+  fork_note: string | null;
+  parent_work_id: string | null;
+  fork_chapter_position: number | null;
+  star_count: number;
+  is_canon: boolean;
+  created_at: string;
+  owner: { handle: string; display_name: string };
+  chapterCount: number;
+};
+
+/** 갈래 지도: 뿌리 원작과 그 아래 공개된 모든 갈래 */
+export async function getTreeEntries(rootWorkId: string): Promise<TreeEntry[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("works")
+    .select(
+      "id, slug, title, fork_note, parent_work_id, fork_chapter_position, star_count, is_canon, created_at, " +
+        "owner:profiles!works_owner_id_fkey(handle, display_name), chapters(count)",
+    )
+    .eq("root_work_id", rootWorkId)
+    .eq("visibility", "public")
+    .returns<(Omit<TreeEntry, "chapterCount"> & { chapters: { count: number }[] })[]>();
+  if (error) throw error;
+  return data.map(({ chapters, ...w }) => ({ ...w, chapterCount: chapters[0]?.count ?? 0 }));
 }

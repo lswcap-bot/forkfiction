@@ -12,10 +12,11 @@
 - npm run dev / npm run build / npm test / npx playwright test
 - npm run test:db — .env.local의 Supabase 프로젝트에 임시 사용자를 만들어 RLS·DB 함수를 검사하고 지운다(원격 DB를 쓴다)
 - npm run seed:kalui -- --handle=<필명> [--dry-run] — 『칼의 여행』 개발용 시드. 운영 데이터에는 넣지 않는다
+- npm run seed:forks [-- --reset] — 시드 사용자(seed-*@forkfiction.test)가 "[개발용] 시드 원작"(dev-seed-original)과 갈래 5개를 만든다. 실제 작품·사용자에는 손대지 않는다. --reset은 시드 사용자와 그 작품·수정본을 지운다
 - DB 변경은 항상 supabase/migrations/의 새 마이그레이션 파일로. 대시보드에서 직접 고치지 않는다.
 
 ## 꼭 지킬 규칙
-- revisions는 쌓기만 한다. 수정·삭제 코드를 만들지 않는다.
+- revisions는 쌓기만 한다. 수정·삭제 코드를 만들지 않는다. 예외: tests/db 정리와 seed:forks --reset은 service role로 테스트·시드 사용자(@forkfiction.test) 범위의 수정본만 지운다.
 - 갈래 생성은 fork_work() DB 함수로만 한다.
 - 새 갈래 알림은 갈래를 만들 때가 아니라 처음 공개될 때 원작자에게 보낸다(works_notify_fork_published 트리거).
 - 장과 수정본은 DB 함수(save_chapter, revert_chapter, add_chapter, delete_chapter, move_chapter)로만 바꾼다. 직접 insert/update/delete 권한은 없다.
