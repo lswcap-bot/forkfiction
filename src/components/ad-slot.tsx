@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 const SIZES = {
   /** 본문 사이·목록 아래 가로 배너 */
   banner: "h-[100px] w-full max-w-[728px]",
-  /** 넓은 화면 오른쪽 여백 세로 배너 */
-  skyscraper: "h-[600px] w-[160px]",
+  /** 넓은 화면 오른쪽 여백 세로 배너: 160×600, 1280px 이상에서는 300×600 */
+  skyscraper: "h-[600px] w-[160px] xl:w-[300px]",
 } as const;
 
 export type AdSlotSize = keyof typeof SIZES;
@@ -28,7 +28,7 @@ export function AdSlot({ id, size = "banner", className }: { id: string; size?: 
         // 애드센스 승인 뒤 이 자리에 광고 코드를 넣는다(7단계)
         null
       ) : (
-        <div className="flex size-full items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
+        <div className="flex size-full items-center justify-center rounded-ad border border-dashed border-[#BEBBB3] bg-mute text-[11px] font-semibold tracking-[0.08em] text-ink-3">
           광고
         </div>
       )}

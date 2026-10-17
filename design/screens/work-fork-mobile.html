@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>울라의 길 작품 대문 모바일</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;family=Noto+Serif+KR:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F2F1ED}
+*{box-sizing:border-box}
+.ff{font-family:'IBM Plex Sans KR',system-ui,sans-serif;color:#18181B;background:#F2F1ED;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+a{color:#18181B;text-decoration:none}a:hover{color:#4E4C47}
+h1,h2,h3,p{margin:0}
+button{font-family:inherit;color:inherit;cursor:pointer;margin:0}
+svg{display:block}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;height:68px}
+.logo{font-size:20px;font-weight:700;letter-spacing:-0.04em}
+.logo span{font-weight:400}
+.nav{display:flex;align-items:center;gap:6px}
+.icb{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid #D2CFC8;background:transparent;display:inline-grid;place-items:center;padding:0;position:relative}
+.icb svg{width:20px;height:20px}
+.icb.ink{background:#18181B;border-color:#18181B;color:#fff}
+a.icb.ink:hover{color:#fff}
+.dot{position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:#E5484D;border:2px solid #F2F1ED}
+.me{width:44px;height:44px;flex:none;border-radius:50%;border:0;padding:0;background:#DCD3F7;font-size:14px;font-weight:600}
+.btn{height:52px;padding:0 18px;border-radius:999px;border:1px solid transparent;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;white-space:nowrap}
+.btn svg{width:18px;height:18px}
+.btn-ink{background:#18181B;color:#fff}a.btn-ink:hover{color:#fff}
+.btn-line{border-color:#CFCCC4;background:#fff}
+.btn-yel{background:#F1DC2E}
+.btn-pink{background:#F5D2EE}
+.chip{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600}
+.chip svg{width:14px;height:14px}
+.chip-ink{background:#18181B;color:#F1DC2E}
+.chip-w{background:rgba(255,255,255,.7)}
+.meta{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:999px;background:rgba(255,255,255,.6);font-size:12px;font-weight:500}
+.meta b{font-weight:600}
+.stat{display:flex;flex-direction:column;gap:6px}
+.stat small{font-size:11px;color:#6A6760;font-weight:500}
+.stat b{font-size:28px;font-weight:300;letter-spacing:-0.04em;line-height:1}
+.bar{display:flex;gap:4px}
+.bar span{flex:1;height:6px;border-radius:3px;background:rgba(24,24,27,.17)}
+.bar span.d{background:#18181B}
+.panel{background:#fff;border-radius:28px}
+.node{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 16px 6px 6px;border-radius:999px;font-size:14px;font-weight:600}
+.node .a{width:36px;height:36px;flex:none;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:12px;font-weight:600}
+.node small{font-weight:400;color:#4E4C47;font-size:12px;margin-left:auto}
+.vlink{display:flex;align-items:center;gap:10px;padding-left:23px;font-size:12px;color:#4E4C47;font-weight:500;height:28px}
+.vlink i{display:block;width:2px;height:28px;background:#18181B}
+.vlink i.dash{background:none;border-left:2px dashed #9C998F;width:0}
+.tab{height:44px;padding:0 8px 0 16px;border-radius:999px;border:1px solid #D2CFC8;background:#fff;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+.tab .n{min-width:26px;height:26px;padding:0 8px;border-radius:999px;background:#ECEAE4;font-size:12px;display:inline-grid;place-items:center}
+.tab.on{background:#18181B;border-color:#18181B;color:#fff}
+.tab.on .n{background:#F1DC2E;color:#18181B}
+.chrow{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:64px;padding:10px 16px;border-top:1px solid #ECEAE4}
+.chrow:first-child{border-top:0}
+.chrow .no{font-size:13px;font-weight:600;color:#6A6760}
+.chrow .t{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chrow small{font-size:12px;color:#4E4C47}
+.b{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600}
+.b-inh{background:#18181B;color:#fff}
+.b-mod{background:#fff;color:#18181B;border:1.5px solid #18181B}
+.b-new{background:#F5D2EE;color:#18181B}
+.mrow{display:grid;grid-template-columns:76px repeat(11,minmax(0,1fr));align-items:center;min-height:36px;padding:0 6px;border-radius:12px}
+.mrow.cur{background:#FBF4C2}
+.mrow .lb{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:6px}
+.mc{position:relative;height:20px}
+.mc::before{content:'';position:absolute;left:0;right:0;top:9px;height:2px;background:#18181B}
+.mc::after{content:'';position:absolute;left:50%;top:5px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#18181B;box-sizing:border-box}
+.mc.f::after{background:#F5D2EE;border:2px solid #18181B}
+.mc.c::after{background:#F1DC2E;border:2px solid #18181B}
+.mc.e::before,.mc.e::after{display:none}
+.mc.first::before{left:50%}
+.mc.last::before{right:50%}
+.mh{font-size:10px;color:#6A6760;text-align:center;font-weight:500}
+</style>
+</head>
+<body>
+<div class="ff" style="width: 375px; min-height: 2500px; padding: 0 16px 48px">
+
+<header class="hdr">
+<a href="home-mobile.html" class="logo" aria-label="ForkFiction 홈">Fork<span>Fiction</span></a>
+<nav class="nav" aria-label="주 메뉴">
+<a class="icb" href="works-mobile.html" aria-label="전체 목록"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 4.5v15M9.5 4.5v15M14 5l4.5 14.5" stroke-linecap="round"/></svg></a>
+<a class="icb ink" href="#" aria-label="작품 올리기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></a>
+<button class="icb" aria-label="알림 3개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+<button class="me" aria-label="내 프로필 이석원">이</button>
+</nav>
+</header>
+
+<div style="display: flex; align-items: center; gap: 10px; padding: 4px 0 16px; font-size: 12px; color: #6A6760">
+<a class="icb" href="works-mobile.html" aria-label="목록으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+<span>칼의 여행 / <b style="color: #18181B">울라의 길</b></span>
+</div>
+
+<section style="background: #F1DC2E; border-radius: 28px; padding: 22px 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+<div style="display: flex; gap: 6px"><span class="chip chip-w">갈래</span><span class="chip chip-ink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>정사</span></div>
+<button class="icb" style="border-color: rgba(24,24,27,.15); background: rgba(255,255,255,.45)" aria-label="작품 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button>
+</div>
+<h1 style="font-family: 'Noto Serif KR', serif; font-size: 32px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.25">울라의 길</h1>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 40px; height: 40px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 13px; font-weight: 600" aria-hidden="true">바</span>
+<div style="display: flex; flex-direction: column; gap: 1px"><b style="font-size: 14px">바람결</b><small style="font-size: 12px; color: #4E4C47">10.12 갈라짐 · 10.16 갱신</small></div>
+</div>
+<p style="font-size: 15px; line-height: 1.7">『칼의 여행』 8장 「범의 시간」에서 갈라져, 재하와 함께 길을 나선 대장장이의 딸 울라의 이야기로 다시 쓴 갈래. 울라는 열두 해 전 사라진 아버지의 흔적을 따라 압록강 너머 북방의 쇠 장인들을 찾아간다.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span class="meta">라이선스 <b>CC BY-SA 4.0</b></span>
+<span class="meta">AI 활용 <b>맞춤법 교정만</b></span>
+<span class="meta">별 <b>1,204</b></span>
+<span class="meta">갈래 <b>5개</b></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span></div>
+<p style="font-size: 12px; color: #4E4C47">7장 물려받음 · 4장 새로 씀</p>
+</div>
+</section>
+
+
+<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px">
+<a class="btn btn-ink" href="read-mobile.html">첫 장부터 읽기</a>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<button class="btn btn-line" aria-pressed="true"><svg viewBox="0 0 24 24" fill="#18181B" stroke="#18181B" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>별 1,204</button>
+<button class="btn btn-yel" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>정사 인정됨</button>
+</div>
+<button class="btn btn-pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>이 갈래에서 갈라지기</button>
+</div>
+
+<section aria-label="계보" class="panel" style="margin-top: 12px; padding: 16px">
+<p style="font-size: 12px; font-weight: 600; color: #6A6760; margin: 0 0 10px 4px">계보</p>
+<a class="node" href="#" style="background: #DCD3F7"><span class="a" aria-hidden="true">ls</span>칼의 여행<small>원작 · lswcap</small></a>
+<div class="vlink"><i></i>8장에서 갈라짐</div>
+<div class="node" style="background: #F1DC2E" aria-current="page"><span class="a" aria-hidden="true">바</span>울라의 길<small>지금 보는 갈래</small></div>
+<div class="vlink"><i class="dash"></i></div>
+<a class="node" href="#" style="background: #F5D2EE; padding-left: 16px">이 갈래에서 갈라진 갈래 5개</a>
+</section>
+
+<div role="tablist" aria-label="작품 보기" style="display: flex; gap: 8px; margin: 28px 0 12px">
+<button class="tab on" role="tab" aria-selected="true">목차<span class="n">11</span></button>
+<button class="tab" role="tab" aria-selected="false">갈래 지도<span class="n">5</span></button>
+</div>
+
+<div class="panel" style="overflow: hidden">
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">1장</span>
+<span style="min-width: 0"><span class="t">시작의 검</span><small>9,840자 · 10.12</small></span>
+<span class="b b-inh">물려받음</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">2장</span>
+<span style="min-width: 0"><span class="t">일곱 가지의 칼</span><small>10,120자 · 10.12</small></span>
+<span class="b b-inh">물려받음</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">3장</span>
+<span style="min-width: 0"><span class="t">보이지 않는 날</span><small>10,310자 · 10.12</small></span>
+<span class="b b-inh">물려받음</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">4장</span>
+<span style="min-width: 0"><span class="t">하늘이 실린 칼</span><small>9,760자 · 10.12</small></span>
+<span class="b b-inh">물려받음</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">5장</span>
+<span style="min-width: 0"><span class="t">별무검</span><small>10,450자 · 10.12</small></span>
+<span class="b b-inh">물려받음</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">6장</span>
+<span style="min-width: 0"><span class="t">천 번째 칼</span><small>9,980자 · 10.12</small></span>
+<span class="b b-inh">물려받음</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">7장</span>
+<span style="min-width: 0"><span class="t">들어가지 못한 칼</span><small>10,600자 · 10.12</small></span>
+<span class="b b-inh">물려받음</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">8장</span>
+<span style="min-width: 0"><span class="t">범의 시간</span><small>10,230자 · 10.13</small></span>
+<span class="b b-mod">고침</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">9장</span>
+<span style="min-width: 0"><span class="t">국경의 대장간</span><small>9,820자 · 10.14</small></span>
+<span class="b b-new">새 장</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">10장</span>
+<span style="min-width: 0"><span class="t">북방의 쇠 장인</span><small>10,040자 · 10.15</small></span>
+<span class="b b-new">새 장</span>
+</a>
+
+<a class="chrow" href="read-mobile.html">
+<span class="no">11장</span>
+<span style="min-width: 0"><span class="t">울라의 칼</span><small>8,910자 · 10.16</small></span>
+<span class="b b-new">새 장</span>
+</a>
+
+</div>
+
+<aside class="panel" style="margin-top: 12px; padding: 18px 10px 14px; display: flex; flex-direction: column; gap: 8px">
+<div style="padding: 0 8px 4px"><h2 style="font-size: 16px; font-weight: 700">갈래 지도 미리보기</h2><p style="font-size: 12px; color: #6A6760; margin-top: 2px">『칼의 여행』에서 갈라진 갈래</p></div>
+<div class="mrow" aria-hidden="true" style="min-height: 20px"><span></span><span class="mh">1</span><span class="mh">2</span><span class="mh">3</span><span class="mh">4</span><span class="mh">5</span><span class="mh">6</span><span class="mh">7</span><span class="mh">8</span><span class="mh">9</span><span class="mh">10</span><span class="mh">11</span></div>
+
+<div class="mrow" role="img" aria-label="원작 칼의 여행, 10장">
+<span class="lb">칼의 여행</span>
+<span class="mc first"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc last"></span><span class="mc e"></span>
+</div>
+
+<div class="mrow" role="img" aria-label="단이의 마을, 6장에서 갈라짐">
+<span class="lb">단이의 마을</span>
+<span class="mc first"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc f"></span><span class="mc f"></span><span class="mc f last"></span><span class="mc e"></span><span class="mc e"></span><span class="mc e"></span>
+</div>
+
+<div class="mrow" role="img" aria-label="아르샤의 서쪽 길, 6장에서 갈라짐">
+<span class="lb">아르샤</span>
+<span class="mc first"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc f"></span><span class="mc f"></span><span class="mc f"></span><span class="mc f"></span><span class="mc f"></span><span class="mc f last"></span>
+</div>
+
+<div class="mrow cur" role="img" aria-label="울라의 길, 8장에서 갈라짐, 정사, 지금 보는 갈래">
+<span class="lb">울라의 길</span>
+<span class="mc first"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc c"></span><span class="mc c"></span><span class="mc c"></span><span class="mc c last"></span>
+</div>
+
+<div class="mrow" role="img" aria-label="진아의 실록, 9장에서 갈라짐">
+<span class="lb">진아의 실록</span>
+<span class="mc first"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc"></span><span class="mc f"></span><span class="mc f last"></span><span class="mc e"></span>
+</div>
+
+</aside>
+
+<aside aria-label="광고" style="margin-top: 32px; height: 100px; border-radius: 24px; background: #E6E4DE; border: 1px dashed #BEBBB3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #6A6760; font-size: 12px"><b style="font-size: 11px; letter-spacing: .08em">광고</b><span>목차 끝 · 320×100</span></aside>
+
+</div>
+</body>
+</html>

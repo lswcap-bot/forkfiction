@@ -11,8 +11,8 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16">
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">로그인</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-[28px] font-bold tracking-[-0.04em] sm:text-4xl">로그인</h1>
+        <p className="text-[15px] leading-relaxed text-ink-2">
           로그인하면 작품을 올리고, 원하는 장에서 갈래를 낼 수 있습니다.
         </p>
       </div>

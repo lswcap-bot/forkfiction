@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { AdSlot } from "@/components/ad-slot";
+import { Chip, EmptyState } from "@/components/ff";
 import { LineageLine } from "@/components/lineage-line";
 import { layoutForkTree, type TreeWork } from "@/lib/fork-tree";
 import { getLineage, getTreeEntries, getWorkBySlug, type TreeEntry } from "@/lib/works";
@@ -15,7 +16,7 @@ export const metadata: Metadata = { title: "갈래 지도" };
 // 갈래에서 열어도 뿌리 원작의 지도 전체를 보여 주고 지금 갈래를 강조한다. 광고는 지도 아래 1개(F10).
 export default function TreePage({ params }: PageProps<"/w/[slug]/tree">) {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-12">
+    <main className="ff-container flex flex-1 flex-col gap-4 pt-2 pb-20">
       <Suspense fallback={null}>
         <TreeView params={params} />
       </Suspense>
@@ -33,10 +34,13 @@ async function TreeView({ params }: Pick<PageProps<"/w/[slug]/tree">, "params">)
   const forks = entries.filter((e) => e.id !== work.root_work_id);
 
   const header = (
-    <header className="flex flex-col gap-3">
-      <LineageLine lineage={lineage} />
-      <h1 className="font-serif text-3xl font-bold tracking-tight">{work.title}</h1>
-      {work.fork_note && <p className="text-muted-foreground">{work.fork_note}</p>}
+    <header className="flex flex-col gap-3.5">
+      <div className="flex flex-col gap-2">
+        <p className="text-[13px] font-medium text-ink-3">갈래 지도</p>
+        <h1 className="font-serif text-[28px] leading-tight font-bold tracking-[-0.04em] sm:text-4xl">{work.title}</h1>
+        {work.fork_note && <p className="text-[15px] text-ink-2">{work.fork_note}</p>}
+      </div>
+      <LineageLine lineage={lineage} variant="panel" />
     </header>
   );
 
@@ -45,9 +49,7 @@ async function TreeView({ params }: Pick<PageProps<"/w/[slug]/tree">, "params">)
       <>
         {header}
         <WorkTabs slug={work.slug} current="tree" />
-        <p className="rounded-lg bg-muted/50 px-4 py-6 text-center text-sm text-muted-foreground">
-          원작이 공개되어 있지 않아 갈래 지도를 볼 수 없습니다.
-        </p>
+        <EmptyState title="원작이 공개되어 있지 않아 갈래 지도를 볼 수 없습니다." />
       </>
     );
   }
@@ -73,29 +75,29 @@ async function TreeView({ params }: Pick<PageProps<"/w/[slug]/tree">, "params">)
       <WorkTabs slug={work.slug} current="tree" />
 
       <section className="flex flex-col gap-3" aria-label="갈래 지도">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-[13px] leading-relaxed text-ink-2">
           『{root.title}』에서 뻗어 나간 공개 갈래 {forks.length.toLocaleString()}개. 가지를 누르면 그 갈래로 갑니다.
           동그라미 숫자는 그 장에서 갈라진 갈래 수입니다. 옆으로 끌어서 볼 수 있습니다.
         </p>
         {work.visibility !== "public" && (
-          <p className="text-sm text-amber-800 dark:text-amber-300">이 작품은 아직 공개되지 않아 지도에 없습니다.</p>
+          <p className="text-[13px] font-medium text-ink">이 작품은 아직 공개되지 않아 지도에 없습니다.</p>
         )}
         <ForkMap layout={layout} entries={mapEntries} currentId={work.id} />
         {layout.hidden > 0 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-[13px] text-ink-2">
             지도에는 별이 많은 갈래 {layout.branches.length - 1}개만 그렸습니다. 나머지 {layout.hidden}개는 아래 목록에 있습니다.
           </p>
         )}
       </section>
 
-      <AdSlot id="tree-below-map" />
+      <AdSlot id="tree-below-map" className="my-6" />
 
       {forks.length > 0 && (
-        <details open={layout.hidden > 0} className="rounded-lg border">
-          <summary className="cursor-pointer px-4 py-3 text-sm font-medium">
+        <details open={layout.hidden > 0} className="overflow-hidden rounded-card bg-surface">
+          <summary className="flex min-h-[60px] cursor-pointer items-center px-[22px] text-sm font-semibold">
             갈래 목록 ({forks.length.toLocaleString()}개)
           </summary>
-          <ol className="flex flex-col divide-y border-t">
+          <ol className="flex flex-col divide-y divide-line-soft border-t border-line-soft">
             {listed.map((f) => (
               <li key={f.id}>
                 <ForkListItem fork={f} parent={byId.get(f.parent_work_id!)} current={f.id === work.id} />
@@ -122,17 +124,18 @@ function toTreeWork(e: TreeEntry): TreeWork {
 
 function ForkListItem({ fork, parent, current }: { fork: TreeEntry; parent: TreeEntry | undefined; current: boolean }) {
   return (
-    <Link href={`/w/${fork.slug}`} className={`flex flex-col gap-0.5 px-4 py-3 hover:bg-muted/50 ${current ? "bg-muted" : ""}`}>
+    <Link
+      href={`/w/${fork.slug}`}
+      className={`flex min-h-[60px] flex-col justify-center gap-0.5 px-[22px] py-3 hover:bg-[#FAF9F6] ${fork.is_canon ? "bg-canon-row" : ""} ${current ? "shadow-[inset_3px_0_0_var(--ff-ink)]" : ""}`}
+    >
       <span className="flex flex-wrap items-baseline gap-x-2">
-        {fork.is_canon && (
-          <span className="rounded bg-amber-100 px-1 text-xs text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">정사</span>
-        )}
-        <span className="font-serif font-medium">『{fork.title}』</span>
-        <span className="text-sm text-muted-foreground">
+        {fork.is_canon && <Chip tone="canon">정사</Chip>}
+        <span className="font-serif font-semibold">『{fork.title}』</span>
+        <span className="text-[13px] text-ink-2">
           {fork.owner.display_name} · ★ {fork.star_count.toLocaleString()}
         </span>
       </span>
-      <span className="text-sm text-muted-foreground">
+      <span className="text-[13px] text-ink-2">
         {parent ? `『${parent.title}』 ` : ""}
         {fork.fork_chapter_position}장에서 갈라짐{fork.fork_note && ` · ${fork.fork_note}`}
       </span>

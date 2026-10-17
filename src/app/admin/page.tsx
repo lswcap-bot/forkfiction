@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PillLink } from "@/components/ff";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getViewer } from "@/lib/auth";
@@ -13,7 +14,7 @@ export const metadata: Metadata = { title: "관리" };
 // 광고 없음(F10).
 export default function AdminPage({ searchParams }: PageProps<"/admin">) {
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-12">
+    <main className="mx-auto flex w-full max-w-[912px] flex-1 flex-col gap-6 px-4 pt-6 pb-20 sm:pt-10">
       <Suspense fallback={null}>
         <AdminView searchParams={searchParams} />
       </Suspense>
@@ -33,22 +34,17 @@ async function AdminView({ searchParams }: Pick<PageProps<"/admin">, "searchPara
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">관리</h1>
-      <nav className="flex gap-1 border-b" aria-label="관리 탭">
+      <h1 className="text-[28px] font-bold tracking-[-0.04em] sm:text-4xl">관리</h1>
+      <nav className="flex gap-2" aria-label="관리 탭">
         {(
           [
             ["reports", "열린 신고"],
             ["hidden", "숨긴 작품"],
           ] as const
         ).map(([key, label]) => (
-          <Link
-            key={key}
-            href={key === "reports" ? "/admin" : "/admin?tab=hidden"}
-            aria-current={current === key ? "page" : undefined}
-            className={`-mb-px border-b-2 px-3 py-2 text-sm ${current === key ? "border-foreground font-medium" : "border-transparent text-muted-foreground hover:text-foreground"}`}
-          >
+          <PillLink key={key} href={key === "reports" ? "/admin" : "/admin?tab=hidden"} current={current === key}>
             {label}
-          </Link>
+          </PillLink>
         ))}
       </nav>
       {current === "reports" ? <OpenReports /> : <HiddenWorks />}
@@ -84,7 +80,7 @@ async function OpenReports() {
   if (data.length === 0) return <Empty>열린 신고가 없습니다.</Empty>;
 
   return (
-    <ol className="flex flex-col divide-y rounded-lg border">
+    <ol className="flex flex-col divide-y divide-line-soft overflow-hidden rounded-card bg-surface">
       {data.map((r) => {
         const href = r.chapter ? `/w/${r.work.slug}/${r.chapter.position}` : `/w/${r.work.slug}`;
         return (
@@ -141,7 +137,7 @@ async function HiddenWorks() {
   if (data.length === 0) return <Empty>숨긴 작품이 없습니다.</Empty>;
 
   return (
-    <ol className="flex flex-col divide-y rounded-lg border">
+    <ol className="flex flex-col divide-y divide-line-soft overflow-hidden rounded-card bg-surface">
       {data.map((w) => {
         const reasons = [...new Set(w.reports.filter((r) => r.status === "resolved").map((r) => reportReasonLabel(r.reason)))];
         return (
@@ -172,5 +168,5 @@ async function HiddenWorks() {
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="rounded-lg bg-muted/50 px-4 py-6 text-center text-sm text-muted-foreground">{children}</p>;
+  return <p className="rounded-card border-[1.5px] border-dashed border-kind-draft-line px-4 py-10 text-center text-sm leading-relaxed text-ink-2">{children}</p>;
 }

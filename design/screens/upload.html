@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>새 작품 올리기</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;family=Noto+Serif+KR:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F2F1ED}
+*{box-sizing:border-box}
+.ff{font-family:'IBM Plex Sans KR',system-ui,sans-serif;color:#18181B;background:#F2F1ED;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+a{color:#18181B;text-decoration:none}a:hover{color:#4E4C47}
+h1,h2,h3,p,pre{margin:0}
+button,input,textarea{font-family:inherit;color:inherit;margin:0}
+button{cursor:pointer}
+svg{display:block}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:16px;height:88px}
+.logo{font-size:23px;font-weight:700;letter-spacing:-0.04em}
+.logo span{font-weight:400}
+.nav{display:flex;align-items:center;gap:8px}
+.navlink{height:44px;padding:0 18px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.navlink svg{width:18px;height:18px}
+.icb{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid #D2CFC8;background:transparent;display:inline-grid;place-items:center;padding:0;position:relative}
+.icb svg{width:20px;height:20px}
+.dot{position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:#E5484D;border:2px solid #F2F1ED}
+.mep{height:44px;padding:0 16px 0 4px;border-radius:999px;border:1px solid #D2CFC8;background:#fff;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+.mep span{width:34px;height:34px;border-radius:50%;background:#DCD3F7;display:grid;place-items:center;font-size:13px}
+.btn{height:44px;padding:0 20px;border-radius:999px;border:1px solid transparent;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;white-space:nowrap}
+.btn svg{width:18px;height:18px}
+.btn-ink{background:#18181B;color:#fff}a.btn-ink:hover{color:#fff;background:#2C2C30}
+.btn-line{border-color:#CFCCC4;background:#fff}
+.btn-sm{height:40px;padding:0 14px;font-size:13px}
+.btn-lg{height:52px;padding:0 28px;font-size:15px}
+.btn[disabled]{background:#E2E0DA;color:#6A6760;cursor:not-allowed}
+.step{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 18px 0 6px;border-radius:999px;font-size:14px;font-weight:600;background:#fff;border:1px solid #D2CFC8;color:#4E4C47}
+.step i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13px;background:#ECEAE4}
+.step.on{background:#18181B;border-color:#18181B;color:#fff}
+.step.on i{background:#F1DC2E;color:#18181B}
+.lbl{display:block;font-size:14px;font-weight:600;margin-bottom:10px}
+.help{font-size:13px;color:#4E4C47;line-height:1.65;margin-top:10px}
+.mono{font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace}
+summary{cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+</style>
+</head>
+<body>
+<div class="ff" style="min-height: 1400px">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 64px 80px">
+
+<header class="hdr">
+<a href="home.html" class="logo" aria-label="ForkFiction 홈">Fork<span>Fiction</span></a>
+<nav class="nav" aria-label="주 메뉴">
+<a class="navlink" href="works.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5v15M9.5 4.5v15M14 5l4.5 14.5"/></svg>전체 목록</a>
+<a class="btn btn-ink" href="upload.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>작품 올리기</a>
+<button class="icb" aria-label="알림 3개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+<button class="mep" aria-label="내 프로필 이석원"><span aria-hidden="true">이</span>이석원</button>
+</nav>
+</header>
+
+<div style="max-width: 880px; margin: 0 auto">
+
+<section style="padding: 32px 0 28px; display: flex; flex-direction: column; gap: 12px">
+<h1 style="font-size: 36px; font-weight: 700; letter-spacing: -0.04em">새 작품 올리기</h1>
+<p style="font-size: 15px; color: #4E4C47; line-height: 1.6">MD 원고를 올리면 제목(#, ##)을 기준으로 장을 나눕니다. 나눈 결과를 확인하고 고친 뒤 저장하세요.</p>
+</section>
+
+<ol aria-label="단계" style="list-style: none; padding: 0; margin: 0 0 20px; display: flex; align-items: center; gap: 10px">
+<li class="step on" aria-current="step"><i>1</i>원고</li>
+<li aria-hidden="true" style="width: 32px; height: 2px; background: #D2CFC8"></li>
+<li class="step"><i>2</i>장 확인 · 저장</li>
+</ol>
+
+<section aria-labelledby="h-ms" style="background: #fff; border-radius: 32px; padding: 32px; display: flex; flex-direction: column; gap: 28px">
+<h2 id="h-ms" style="font-size: 20px; font-weight: 700; letter-spacing: -0.03em">1. 원고</h2>
+
+<div>
+<span class="lbl">MD 파일</span>
+<label style="position: relative; display: flex; align-items: center; gap: 18px; padding: 22px 24px; border-radius: 24px; border: 1.5px dashed #C9C6BE; background: #F7F6F2; cursor: pointer">
+<span style="width: 52px; height: 52px; flex: none; border-radius: 16px; background: #DCD3F7; display: grid; place-items: center" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px"><path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10.5a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5z"/><path d="M14 3.5V8h4M12 17v-6M9.5 13.5L12 11l2.5 2.5"/></svg></span>
+<span style="display: flex; flex-direction: column; gap: 4px; flex: 1"><b style="font-size: 15px">.md 파일을 끌어다 놓거나 골라 주세요</b><small style="font-size: 13px; color: #4E4C47">선택된 파일 없음</small></span>
+<span class="btn btn-line btn-sm">파일 선택</span>
+<input type="file" accept=".md,text/markdown" style="position: absolute; width: 1px; height: 1px; opacity: 0">
+</label>
+</div>
+
+<div style="display: flex; align-items: center; gap: 14px; color: #6A6760; font-size: 13px" aria-hidden="true"><span style="flex: 1; height: 1px; background: #E2E0DA"></span>또는<span style="flex: 1; height: 1px; background: #E2E0DA"></span></div>
+
+<div>
+<label class="lbl" for="paste">본문 붙여넣기</label>
+<textarea id="paste" class="mono" placeholder="# 작품 제목&#10;&#10;## 1장 제목&#10;&#10;본문…&#10;&#10;## 2장 제목&#10;&#10;본문…" style="width: 100%; height: 220px; resize: vertical; border-radius: 20px; border: 1px solid #D2CFC8; background: #FAF9F6; padding: 18px 20px; font-size: 14px; line-height: 1.75"></textarea>
+<p class="help">맨 위 #이 하나면 작품 제목, 그 아래 ##를 장으로 봅니다. #이 여러 개면 각 #을 장으로 보되, 맨 위 # 아래에 본문이 없으면 작품 제목으로 봅니다.</p>
+</div>
+
+<details open="open" style="border-radius: 24px; background: #F2F1ED; padding: 6px">
+<summary style="display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 48px; padding: 0 16px; font-size: 14px; font-weight: 600">MD 형식 예시<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 18px; height: 18px"><path d="M6 15l6-6 6 6"/></svg></summary>
+<div style="background: #fff; border-radius: 20px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+<pre class="mono" style="font-size: 13px; line-height: 1.8; background: #F7F6F2; border-radius: 14px; padding: 16px 18px; white-space: pre-wrap"># 칼의 여행
+
+## 1장 — 떠나는 날
+
+새벽 안개가 마을을 덮고 있었다.
+
+## 2장 — 강가에서
+
+강물은 생각보다 차가웠다.</pre>
+<p style="font-size: 13px; color: #4E4C47; line-height: 1.7">이렇게 쓰면 작품 제목은 『칼의 여행』, 장은 「떠나는 날」 「강가에서」 두 개가 됩니다. 장 제목 앞의 ‘1장 —’은 장 번호와 겹치므로 떼고, 첫 장 앞에 쓴 글은 ‘머리말’ 장이 됩니다.</p>
+<div><button class="btn btn-line btn-sm">예시를 붙여넣기 칸에 넣기</button></div>
+</div>
+</details>
+
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid #ECEAE4">
+<button class="btn btn-lg" disabled="disabled" style="margin-top: 20px">장 나누기</button>
+<span style="font-size: 13px; color: #6A6760; margin-top: 20px">파일을 고르거나 본문을 붙여 넣으면 누를 수 있어요.</span>
+</div>
+</section>
+
+</div>
+</div>
+</div>
+</body>
+</html>

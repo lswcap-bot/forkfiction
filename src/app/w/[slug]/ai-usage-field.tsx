@@ -34,7 +34,7 @@ export function AiUsageField({ workId, value, inherited }: { workId: string; val
             }
           });
         }}
-        className="rounded-md border bg-transparent px-1.5 py-0.5 text-sm text-foreground disabled:opacity-60"
+        className="h-7 rounded-full border border-line bg-surface px-2 text-[13px] font-semibold text-ink disabled:opacity-60"
       >
         {AI_USAGES.map((a) => (
           <option key={a.value} value={a.value}>

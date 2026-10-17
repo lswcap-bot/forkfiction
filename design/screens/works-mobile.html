@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ForkFiction 전체 목록 모바일</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;family=Noto+Serif+KR:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F2F1ED}
+*{box-sizing:border-box}
+.ff{font-family:'IBM Plex Sans KR',system-ui,sans-serif;color:#18181B;background:#F2F1ED;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+a{color:#18181B;text-decoration:none}a:hover{color:#4E4C47}
+h1,h2,h3,p{margin:0}
+button{font-family:inherit;color:inherit;cursor:pointer;margin:0}
+svg{display:block}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;height:68px}
+.logo{font-size:20px;font-weight:700;letter-spacing:-0.04em}
+.logo span{font-weight:400}
+.nav{display:flex;align-items:center;gap:6px}
+.icb{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid #D2CFC8;background:transparent;display:inline-grid;place-items:center;padding:0;position:relative}
+.icb svg{width:20px;height:20px}
+.icb.ink{background:#18181B;border-color:#18181B;color:#fff}
+a.icb.ink:hover{color:#fff}
+.icb.on{background:#fff;border-color:#18181B}
+.dot{position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:#E5484D;border:2px solid #F2F1ED}
+.me{width:44px;height:44px;flex:none;border-radius:50%;border:0;padding:0;background:#DCD3F7;font-size:14px;font-weight:600}
+.eyebrow{font-size:12px;color:#6A6760;font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:20px;background:#fff}
+.stat small{font-size:11px;color:#6A6760;font-weight:500}
+.stat b{font-size:28px;font-weight:300;letter-spacing:-0.04em;line-height:1}
+.pills{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px}
+.pill{flex:none;height:44px;padding:0 8px 0 16px;border-radius:999px;border:1px solid #D2CFC8;background:#fff;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.pill .n{min-width:26px;height:26px;padding:0 8px;border-radius:999px;background:#ECEAE4;font-size:12px;font-weight:600;display:inline-grid;place-items:center}
+.pill.on{background:#18181B;border-color:#18181B;color:#fff}
+.pill.on .n{background:#F1DC2E;color:#18181B}
+.sort{display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:#E6E4DE}
+.sort button{height:36px;padding:0 10px;border-radius:999px;border:0;background:transparent;font-size:13px;font-weight:500;color:#4E4C47}
+.sort button.on{background:#fff;color:#18181B;box-shadow:0 1px 2px rgba(24,24,27,.08)}
+.list{display:flex;flex-direction:column;gap:12px}
+.card{border-radius:28px;padding:18px;display:flex;flex-direction:column;gap:12px;min-height:190px}
+.k-orig{background:#DCD3F7}.k-fork{background:#F5D2EE}.k-canon{background:#F1DC2E}.k-draft{background:#fff;border:1.5px solid #C9C6BE}
+.ct{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ttl{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:4px;min-width:0}
+.ttl h3{font-size:16px;font-weight:700;line-height:1.35;letter-spacing:-0.02em}
+.more{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid rgba(24,24,27,.12);background:rgba(255,255,255,.45);display:grid;place-items:center;padding:0}
+.more svg{width:18px;height:18px}
+.chip{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:0}
+.chip-ink{background:#18181B;color:#F1DC2E}
+.chip-line{border:1px solid #C9C6BE;color:#4E4C47;background:#fff}
+.from{font-size:12px;color:#4E4C47;display:flex;align-items:center;gap:6px;line-height:1.4}
+.from svg{width:14px;height:14px;flex:none}
+.bar{display:flex;gap:4px;margin-top:4px}
+.bar span{flex:1;height:5px;border-radius:3px;background:rgba(24,24,27,.17)}
+.bar span.d{background:#18181B}
+.cap{font-size:12px;color:#4E4C47;margin-top:-4px}
+.foot{display:flex;align-items:center;gap:10px;margin-top:auto}
+.ava{width:38px;height:38px;flex:none;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:13px;font-weight:600}
+.k-draft .ava{background:#ECEAE4}
+.who{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.who b{font-size:14px;font-weight:600}
+.who small{font-size:12px;color:#4E4C47}
+.cnt{display:flex;gap:10px;font-size:12px;font-weight:600}
+.cnt span{display:inline-flex;align-items:center;gap:4px}
+.cnt svg{width:14px;height:14px}
+.ad{border-radius:28px;background:#E6E4DE;border:1px dashed #BEBBB3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#6A6760;font-size:12px}
+.ad b{font-size:11px;font-weight:600;letter-spacing:.08em}
+.pg{width:44px;height:44px;border-radius:50%;border:0;background:transparent;font-size:14px;font-weight:500;padding:0}
+.pg.on{background:#18181B;color:#fff}
+</style>
+</head>
+<body>
+<div class="ff" style="width: 375px; min-height: 3760px; padding: 0 16px 48px">
+
+<header class="hdr">
+<a href="home-mobile.html" class="logo" aria-label="ForkFiction 홈">Fork<span>Fiction</span></a>
+<nav class="nav" aria-label="주 메뉴">
+<a class="icb on" href="works-mobile.html" aria-label="전체 목록" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 4.5v15M9.5 4.5v15M14 5l4.5 14.5" stroke-linecap="round"/></svg></a>
+<a class="icb ink" href="#" aria-label="작품 올리기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></a>
+<button class="icb" aria-label="알림 3개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+<button class="me" aria-label="내 프로필 이석원">이</button>
+</nav>
+</header>
+
+<section style="display: flex; flex-direction: column; gap: 16px; padding: 12px 0 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<p class="eyebrow">작품 둘러보기</p>
+<h1 style="font-size: 28px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.2">전체 목록</h1>
+</div>
+<div class="stats">
+<div class="stat"><small>원작</small><b>128</b></div>
+<div class="stat"><small>갈래</small><b>342</b></div>
+<div class="stat"><small>이번 주 새 갈래</small><b>27</b></div>
+</div>
+</section>
+
+<div class="pills" role="group" aria-label="종류 필터" style="margin-bottom: 12px">
+<button class="pill on" aria-pressed="true">전체<span class="n">470</span></button>
+<button class="pill" aria-pressed="false">원작<span class="n">128</span></button>
+<button class="pill" aria-pressed="false">갈래<span class="n">342</span></button>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 20px">
+<span style="font-size: 13px; color: #4E4C47; white-space: nowrap">작품 <b style="color: #18181B">470</b>개</span>
+<div class="sort" role="group" aria-label="정렬">
+<button class="on" aria-pressed="true">최신순</button>
+<button aria-pressed="false">별 많은 순</button>
+<button aria-pressed="false">갈래 많은 순</button>
+</div>
+</div>
+
+<div class="list">
+
+<article class="card k-draft">
+<div class="ct"><div class="ttl"><span class="chip chip-line">임시 저장</span><h3>칼의 여행 2부</h3></div><button class="more" aria-label="칼의 여행 2부 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+
+<div class="bar" aria-hidden="true"><span class="l"></span><span class="l"></span></div>
+<p class="cap">2장 쓰는 중 · 나만 보임</p>
+<div class="foot"><span class="ava" aria-hidden="true">ls</span><div class="who"><b>lswcap</b><small>오늘 15:40 저장</small></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>진아의 실록</h3></div><button class="more" aria-label="진아의 실록 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『칼의 여행』 9장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">8장 물려받음 · 2장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">진</span><div class="who"><b>진주목</b><small>2026.10.16</small></div><div class="cnt"><span aria-label="별 97개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>97</span><span aria-label="갈래 0개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>0</span></div></div>
+</article>
+
+<article class="card k-orig">
+<div class="ct"><div class="ttl"><h3>북쪽 등대</h3></div><button class="more" aria-label="북쪽 등대 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+<p class="cap">6장 · 연재 중</p>
+<div class="foot"><span class="ava" aria-hidden="true">이</span><div class="who"><b>이안</b><small>2026.10.16</small></div><div class="cnt"><span aria-label="별 77개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>77</span><span aria-label="갈래 0개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>0</span></div></div>
+</article>
+
+<article class="card k-orig">
+<div class="ct"><div class="ttl"><h3>마지막 우편배달부</h3></div><button class="more" aria-label="마지막 우편배달부 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+<p class="cap">5장 · 연재 중</p>
+<div class="foot"><span class="ava" aria-hidden="true">류</span><div class="who"><b>류한결</b><small>2026.10.15</small></div><div class="cnt"><span aria-label="별 132개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>132</span><span aria-label="갈래 1개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>1</span></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>단이의 마을</h3></div><button class="more" aria-label="단이의 마을 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『칼의 여행』 6장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">5장 물려받음 · 3장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">서</span><div class="who"><b>서해달</b><small>2026.10.14</small></div><div class="cnt"><span aria-label="별 386개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>386</span><span aria-label="갈래 2개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>2</span></div></div>
+</article>
+
+<article class="card k-orig">
+<div class="ct"><div class="ttl"><h3>유리 정원</h3></div><button class="more" aria-label="유리 정원 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+<p class="cap">9장 · 완결</p>
+<div class="foot"><span class="ava" aria-hidden="true">소</span><div class="who"><b>소금빵</b><small>2026.10.13</small></div><div class="cnt"><span aria-label="별 441개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>441</span><span aria-label="갈래 3개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>3</span></div></div>
+</article>
+
+<article class="card k-canon">
+<div class="ct"><div class="ttl"><span class="chip chip-ink">정사</span><h3>울라의 길</h3></div><button class="more" aria-label="울라의 길 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『칼의 여행』 8장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">7장 물려받음 · 4장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">바</span><div class="who"><b>바람결</b><small>2026.10.12</small></div><div class="cnt"><span aria-label="별 1,204개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>1,204</span><span aria-label="갈래 5개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>5</span></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>수장고의 아이</h3></div><button class="more" aria-label="수장고의 아이 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『칼의 여행』 2장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">1장 물려받음 · 4장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">은</span><div class="who"><b>은솔</b><small>2026.10.11</small></div><div class="cnt"><span aria-label="별 58개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>58</span><span aria-label="갈래 0개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>0</span></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>사서는 돌아오지 않는다</h3></div><button class="more" aria-label="사서는 돌아오지 않는다 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『바다 아래 도서관』 5장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">4장 물려받음 · 4장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">하</span><div class="who"><b>하늘타리</b><small>2026.10.10</small></div><div class="cnt"><span aria-label="별 175개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>175</span><span aria-label="갈래 0개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>0</span></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>아르샤의 서쪽 길</h3></div><button class="more" aria-label="아르샤의 서쪽 길 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『칼의 여행』 6장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">5장 물려받음 · 6장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">no</span><div class="who"><b>noa</b><small>2026.10.09</small></div><div class="cnt"><span aria-label="별 512개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>512</span><span aria-label="갈래 3개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>3</span></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>편의점의 다른 밤</h3></div><button class="more" aria-label="편의점의 다른 밤 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『새벽 세 시의 편의점』 4장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">3장 물려받음 · 5장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">mo</span><div class="who"><b>moonlit</b><small>2026.10.06</small></div><div class="cnt"><span aria-label="별 214개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>214</span><span aria-label="갈래 1개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>1</span></div></div>
+</article>
+
+<article class="card k-orig">
+<div class="ct"><div class="ttl"><h3>칼의 여행</h3></div><button class="more" aria-label="칼의 여행 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+<p class="cap">10장 · 연재 중</p>
+<div class="foot"><span class="ava" aria-hidden="true">ls</span><div class="who"><b>lswcap</b><small>2026.10.02</small></div><div class="cnt"><span aria-label="별 2,418개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>2,418</span><span aria-label="갈래 14개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>14</span></div></div>
+</article>
+
+
+<aside class="ad" aria-label="광고" style="height: 120px"><b>광고</b><span>12번째 카드 뒤 · 320×100</span></aside>
+
+
+<article class="card k-orig">
+<div class="ct"><div class="ttl"><h3>바다 아래 도서관</h3></div><button class="more" aria-label="바다 아래 도서관 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+<p class="cap">7장 · 연재 중</p>
+<div class="foot"><span class="ava" aria-hidden="true">하</span><div class="who"><b>하람</b><small>2026.09.28</small></div><div class="cnt"><span aria-label="별 860개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>860</span><span aria-label="갈래 6개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>6</span></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>마감 후의 손님</h3></div><button class="more" aria-label="마감 후의 손님 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『새벽 세 시의 편의점』 6장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">5장 물려받음 · 3장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">도</span><div class="who"><b>도토리</b><small>2026.09.26</small></div><div class="cnt"><span aria-label="별 31개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>31</span><span aria-label="갈래 0개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>0</span></div></div>
+</article>
+
+<article class="card k-fork">
+<div class="ct"><div class="ttl"><h3>야간 근무자</h3></div><button class="more" aria-label="야간 근무자 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+<p class="from"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>『새벽 세 시의 편의점』 3장에서 갈라짐</p>
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="l"></span><span class="l"></span></div>
+<p class="cap">2장 물려받음 · 2장 새로 씀</p>
+<div class="foot"><span class="ava" aria-hidden="true">담</span><div class="who"><b>담</b><small>2026.09.19</small></div><div class="cnt"><span aria-label="별 19개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>19</span><span aria-label="갈래 0개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>0</span></div></div>
+</article>
+
+<article class="card k-orig">
+<div class="ct"><div class="ttl"><h3>새벽 세 시의 편의점</h3></div><button class="more" aria-label="새벽 세 시의 편의점 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button></div>
+
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+<p class="cap">12장 · 완결</p>
+<div class="foot"><span class="ava" aria-hidden="true">김</span><div class="who"><b>김오월</b><small>2026.09.12</small></div><div class="cnt"><span aria-label="별 1,530개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>1,530</span><span aria-label="갈래 9개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>9</span></div></div>
+</article>
+
+</div>
+
+<nav aria-label="페이지" style="display: flex; justify-content: center; align-items: center; gap: 4px; margin-top: 32px">
+<button class="icb" aria-label="이전 페이지"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+<button class="pg on" aria-current="page">1</button>
+<button class="pg">2</button>
+<button class="pg">3</button>
+<span style="width: 24px; text-align: center; color: #6A6760" aria-hidden="true">…</span>
+<button class="pg">32</button>
+<button class="icb" aria-label="다음 페이지"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</nav>
+
+</div>
+</body>
+</html>

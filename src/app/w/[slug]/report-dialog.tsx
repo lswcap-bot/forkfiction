@@ -34,7 +34,7 @@ export function ReportDialog({ workId, chapterId, target, viewer, returnTo }: Pr
       신고
     </>
   );
-  const triggerClass = buttonVariants({ variant: "ghost", size: "sm", className: "text-muted-foreground" });
+  const triggerClass = buttonVariants({ variant: "ghost", className: "text-ink-3" });
 
   if (viewer !== "ready") {
     const href = `/${viewer === "anon" ? "login" : "onboarding"}?next=${encodeURIComponent(returnTo)}`;

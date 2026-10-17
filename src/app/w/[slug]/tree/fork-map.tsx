@@ -77,7 +77,7 @@ export function ForkMap({ layout, entries, currentId }: Props) {
           target: branch.id,
           type: "straight",
           style: {
-            stroke: entry.isCanon ? "var(--color-amber-500, #f59e0b)" : "var(--muted-foreground)",
+            stroke: entry.isCanon ? "var(--ff-ink)" : "var(--ff-ink-3)",
             strokeWidth: 2,
           },
         });
@@ -93,12 +93,12 @@ export function ForkMap({ layout, entries, currentId }: Props) {
   const startX = current && current.depth > 0 ? Math.max(0, (current.start - 2) * COL) : 0;
 
   return (
-    <div className="w-full overflow-hidden rounded-lg border bg-background" style={{ height: height + 24 }}>
+    <div className="w-full overflow-hidden rounded-card bg-surface" style={{ height: height + 24 }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        colorMode="system"
+        colorMode="light"
         defaultViewport={{ x: 16 - startX, y: 12, zoom: 1 }}
         translateExtent={[
           [-24, -12],
@@ -128,10 +128,10 @@ export function ForkMap({ layout, entries, currentId }: Props) {
 
 function AxisNode({ data }: NodeProps<Node<AxisData>>) {
   return (
-    <div className="flex h-8 text-xs text-muted-foreground" aria-hidden>
+    <div className="flex h-8 text-xs text-ink-3" aria-hidden>
       {Array.from({ length: data.maxChapter }, (_, i) => (
-        <div key={i} className="flex flex-col items-center border-l border-dashed first:border-l-0" style={{ width: COL }}>
-          <span className="font-medium text-foreground tabular-nums">{i + 1}장</span>
+        <div key={i} className="flex flex-col items-center border-l border-dashed border-line-soft first:border-l-0" style={{ width: COL }}>
+          <span className="font-medium tabular-nums">{i + 1}장</span>
         </div>
       ))}
     </div>
@@ -141,13 +141,8 @@ function AxisNode({ data }: NodeProps<Node<AxisData>>) {
 function BranchNode({ data }: NodeProps<Node<BranchData>>) {
   const { branch, entry, current, forksAt } = data;
   const root = branch.depth === 0;
-  const bar = entry.isCanon
-    ? "bg-amber-500"
-    : root
-      ? "bg-foreground"
-      : current
-        ? "bg-primary"
-        : "bg-muted-foreground/70";
+  // 원작 줄은 진하게, 갈래는 연분홍, 정사는 노랑. 지금 작품은 검은 테두리.
+  const bar = root ? "bg-ink" : entry.isCanon ? "border-[1.5px] border-ink bg-kind-canon" : "border-[1.5px] border-ink/25 bg-kind-fork";
   const points = Object.entries(forksAt).map(([chapter, count]) => ({ chapter: Number(chapter), count }));
 
   return (
@@ -157,8 +152,8 @@ function BranchNode({ data }: NodeProps<Node<BranchData>>) {
         <Handle type="target" position={Position.Top} isConnectable={false} className="!opacity-0" style={{ left: COL / 2, top: BAR_TOP }} />
       )}
       <div
-        className={`absolute right-0 left-0 rounded-full ${bar} ${current ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
-        style={{ top: BAR_TOP - (root ? 5 : 3), height: root ? 10 : 6, left: root ? 0 : COL / 2 - 4 }}
+        className={`absolute right-0 left-0 rounded-full ${bar} ${current ? "ring-2 ring-ink ring-offset-2 ring-offset-surface" : ""}`}
+        style={{ top: BAR_TOP - (root ? 5 : 4), height: root ? 10 : 8, left: root ? 0 : COL / 2 - 4 }}
       />
       {/* 이 줄의 장에서 갈라진 갈래 수 */}
       {points.map(({ chapter, count }) => {
@@ -174,7 +169,7 @@ function BranchNode({ data }: NodeProps<Node<BranchData>>) {
               style={{ left: x, top: BAR_TOP }}
             />
             <span
-              className="absolute z-10 flex size-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border bg-background text-[0.65rem] font-medium tabular-nums"
+              className="absolute z-10 flex size-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[1.5px] border-ink bg-surface text-[0.65rem] font-semibold tabular-nums"
               style={{ left: x, top: BAR_TOP }}
               title={`${chapter}장에서 갈라진 갈래 ${count}개`}
             >
@@ -185,14 +180,14 @@ function BranchNode({ data }: NodeProps<Node<BranchData>>) {
       })}
       <div
         // 한 줄에는 가지 하나뿐이라, 짧은 가지의 이름표는 오른쪽 빈 곳으로 넘쳐도 된다
-        className="absolute flex w-max max-w-72 min-w-0 flex-col rounded-sm bg-background/85 px-1 text-xs leading-snug group-hover:bg-muted"
+        className="absolute flex w-max max-w-72 min-w-0 flex-col rounded-sm px-1 text-xs leading-snug group-hover:bg-paper"
         style={{ top: BAR_TOP + 10, left: root ? 0 : COL / 2 + 6 }}
       >
-        <span className={`truncate font-serif text-sm ${current ? "font-bold" : "font-medium"}`}>
-          {entry.isCanon && <span className="mr-1 rounded bg-amber-100 px-1 text-[0.65rem] text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">정사</span>}
+        <span className={`truncate text-sm ${current ? "font-bold" : "font-semibold"}`}>
+          {entry.isCanon && <span className="mr-1 rounded-full bg-ink px-1.5 py-px text-[0.65rem] font-semibold text-kind-canon">정사</span>}
           『{entry.title}』
         </span>
-        <span className="truncate text-muted-foreground">
+        <span className="truncate text-ink-2">
           {entry.author} · ★ {entry.stars.toLocaleString()}
           {entry.note && <> · {entry.note}</>}
         </span>

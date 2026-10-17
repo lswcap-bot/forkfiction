@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_KR } from "next/font/google";
+import { IBM_Plex_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { siteUrl } from "@/lib/public-works";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-sans",
+// UI·숫자·로고 글꼴(tokens.css의 --ff-font-ui). 한글 글자 파일은 구글이 쪼개 주므로 쓰는 글자만 받는다.
+const plexSansKr = IBM_Plex_Sans_KR({
+  variable: "--font-plex-kr",
+  weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// 장 읽기 본문용 한글 명조. 글자 파일이 커서 미리 불러오지 않는다.
+// 장 본문·작품 제목·장 제목용 한글 명조(--ff-font-reading). 글자 파일이 커서 미리 불러오지 않는다.
 const notoSerifKr = Noto_Serif_KR({
-  variable: "--font-serif",
+  variable: "--font-noto-serif-kr",
+  weight: ["400", "600", "700"],
   preload: false,
   display: "swap",
 });
@@ -34,9 +33,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKr.variable} h-full antialiased`}
+      className={`${plexSansKr.variable} ${notoSerifKr.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="group/body flex min-h-full flex-col has-[[data-reading]]:bg-paper-read">
         <SiteHeader />
         {children}
       </body>

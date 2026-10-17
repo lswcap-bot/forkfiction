@@ -12,8 +12,8 @@ export default function Error({ error, retry }: { error: Error & { digest?: stri
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-4 px-4 py-16 text-center">
-      <h1 className="text-2xl font-semibold tracking-tight">문제가 생겼습니다</h1>
-      <p className="text-sm leading-relaxed text-muted-foreground">
+      <h1 className="text-[28px] font-bold tracking-[-0.04em] sm:text-4xl">문제가 생겼습니다</h1>
+      <p className="text-[15px] leading-relaxed text-ink-2">
         잠시 뒤 다시 시도해 주세요. 계속되면 lswcap@naver.com으로 알려 주세요.
         {error.digest && (
           <>

@@ -1,29 +1,47 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./tokens.css";
 
 @custom-variant dark (&:is(.dark *));
 
+/* 디자인 토큰(tokens.css의 --ff-*)을 Tailwind 테마로 잇는다.
+   bg-paper, text-ink-3, bg-kind-fork, rounded-card, shadow-ff-1 처럼 쓴다. */
 @theme inline {
+  --color-paper: var(--ff-paper);
+  --color-paper-read: var(--ff-paper-read);
+  --color-surface: var(--ff-surface);
+  --color-ink: var(--ff-ink);
+  --color-ink-2: var(--ff-ink-2);
+  --color-ink-3: var(--ff-ink-3);
+  --color-line: var(--ff-line);
+  --color-line-soft: var(--ff-line-soft);
+  --color-mute: var(--ff-mute);
+  --color-alert: var(--ff-alert);
+  --color-kind-original: var(--ff-kind-original);
+  --color-kind-fork: var(--ff-kind-fork);
+  --color-kind-canon: var(--ff-kind-canon);
+  --color-kind-draft-line: var(--ff-kind-draft-line);
+  --color-original-line: var(--ff-original-line);
+  --color-canon-row: var(--ff-canon-row);
+  --color-bar-inherited: var(--ff-bar-inherited);
+  --color-bar-new: var(--ff-bar-new);
+
+  --radius-bar: var(--ff-radius-bar);
+  --radius-card: var(--ff-radius-card);
+  --radius-panel: var(--ff-radius-panel);
+  --radius-ad: var(--ff-radius-ad);
+  --shadow-ff-1: var(--ff-shadow-1);
+  --shadow-ff-2: var(--ff-shadow-2);
+
+  --font-sans: var(--ff-font-ui);
+  --font-heading: var(--ff-font-ui);
+  --font-serif: var(--ff-font-reading);
+  --font-mono: var(--ff-font-mono);
+
+  /* shadcn 컴포넌트가 쓰는 이름. 아래 :root에서 토큰으로 채운다 */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-serif);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -49,73 +67,27 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* 시안이 없는 화면도 같은 색으로 보이도록 shadcn 변수를 토큰에 잇는다 */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: var(--ff-paper);
+  --foreground: var(--ff-ink);
+  --card: var(--ff-surface);
+  --card-foreground: var(--ff-ink);
+  --popover: var(--ff-surface);
+  --popover-foreground: var(--ff-ink);
+  --primary: var(--ff-ink);
+  --primary-foreground: var(--ff-surface);
+  --secondary: var(--ff-mute);
+  --secondary-foreground: var(--ff-ink);
+  --muted: var(--ff-mute);
+  --muted-foreground: var(--ff-ink-3);
+  --accent: var(--ff-line-soft);
+  --accent-foreground: var(--ff-ink);
+  --destructive: #c62f35;
+  --border: var(--ff-line);
+  --input: var(--ff-line);
+  --ring: var(--ff-ink-3);
+  --radius: var(--ff-radius-sm);
 }
 
 @layer base {
@@ -129,10 +101,42 @@
     @apply font-sans;
   }
 }
+
+/* 공통 모양: 시안의 카드 막대, 원형 아이콘 버튼, 빈 상태 상자 */
+@layer components {
+  /* 시안의 페이지 폭: 최대 1440px, 좌우 여백 16 / 32 / 64px */
+  .ff-container {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: var(--ff-space-4);
+  }
+  @media (min-width: 40rem) {
+    .ff-container { padding-inline: var(--ff-space-6); }
+  }
+  @media (min-width: 64rem) {
+    .ff-container { padding-inline: var(--ff-space-8); }
+  }
+  .ff-bar {
+    display: flex;
+    gap: var(--ff-bar-gap);
+  }
+  .ff-bar > span {
+    flex: 1 1 0;
+    min-width: 2px;
+    height: var(--ff-bar-height);
+    border-radius: var(--ff-radius-bar);
+    background: var(--ff-bar-new);
+  }
+  .ff-bar > span[data-kind="inherited"] {
+    background: var(--ff-bar-inherited);
+  }
+}
+
 /* 장 읽기 본문: 종이책처럼. 한 줄 40자 내외(글자 크기에 따라 함께 커진다), 넓은 행간 */
 @layer components {
   .reading {
-    font-family: var(--font-serif);
+    font-family: var(--ff-font-reading);
     font-size: var(--reading-size, 1.125rem);
     line-height: 1.9;
     max-width: 40em;
@@ -180,7 +184,7 @@
     letter-spacing: 0.5em;
   }
   .reading code {
-    font-family: var(--font-mono);
+    font-family: var(--ff-font-mono);
     font-size: 0.85em;
     background: var(--muted);
     border-radius: 0.25em;

@@ -31,7 +31,7 @@ export function DraftPanel({ workId, slug, slugLocked, allowFork }: Props) {
   }
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-dashed p-4">
+    <section className="flex flex-col gap-4 rounded-card border-[1.5px] border-dashed border-kind-draft-line bg-surface p-5 sm:p-6">
       <div className="flex flex-col gap-1">
         <h2 className="font-medium">임시 저장 중인 작품입니다</h2>
         <p className="text-sm text-muted-foreground">나만 볼 수 있습니다. 공개하면 누구나 읽을 수 있습니다.</p>

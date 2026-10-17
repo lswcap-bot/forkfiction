@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, List } from "lucide-react";
 import { AdSlot } from "@/components/ad-slot";
 import { LineageLine } from "@/components/lineage-line";
 import { Markdown } from "@/components/markdown";
@@ -35,7 +35,8 @@ export async function generateMetadata({ params }: PageProps<"/w/[slug]/[positio
 // 광고: 본문 끝('다음 장'과 '여기서 갈라지기' 사이), 긴 장은 본문 중간 문단 경계, 넓은 화면은 오른쪽 여백.
 export default function ChapterPage({ params }: PageProps<"/w/[slug]/[position]">) {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 justify-center gap-10 px-4 py-10">
+    // data-reading: 사이트 헤더를 얇게 줄이고 바탕을 읽기 색으로 바꾼다(site-header.tsx, layout.tsx)
+    <main data-reading className="mx-auto flex w-full max-w-6xl flex-1 justify-center gap-10 px-4 pt-8 pb-24 sm:px-8 sm:pt-12 xl:gap-16">
       <Suspense fallback={<div className="flex-1" />}>
         <ChapterView params={params} />
       </Suspense>
@@ -72,31 +73,42 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
       {/* 본문 폭은 .reading이 40em으로 잡는다(보통 글자 크기에서 45rem) */}
       <article className="flex w-full max-w-[45rem] min-w-0 flex-col gap-8">
         {work.visibility === "hidden" && <HiddenNotice isOwner={isOwner} />}
-        <header className="flex flex-col gap-2">
-          <LineageLine lineage={lineage} />
-          <p className="text-sm text-muted-foreground">
-            <Link href={base} className="hover:underline">
-              『{work.title}』
-            </Link>{" "}
-            · {work.owner.display_name}
-            {work.visibility === "draft" && " · 임시 저장"}
-          </p>
-          <h1 className="font-serif text-2xl font-bold tracking-tight">
-            <span className="mr-2 text-muted-foreground">{chapter.position}장</span>
-            {chapter.title}
-          </h1>
-          {/* 갈래의 장: 고친 장은 원작과 비교, 새로 쓴 장은 원작에 없는 장 */}
-          {work.parent_work_id !== null && chapter.state !== "inherited" && (
-            <p className="text-sm text-muted-foreground">
-              {chapter.state === "modified" ? (
-                <Link href={`${base}/${chapter.position}/compare`} className="underline underline-offset-4 hover:text-foreground">
-                  원작과 비교
-                </Link>
-              ) : (
-                "원작에 없는 장"
-              )}
+        <header className="flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <Link
+              href={base}
+              aria-label="작품 대문으로"
+              className="grid size-11 shrink-0 place-items-center rounded-full border border-line hover:bg-ink/5"
+            >
+              <ArrowLeft className="size-5" />
+            </Link>
+            <p className="min-w-0 text-[13px] text-ink-2">
+              <Link href={base} className="hover:underline">
+                『{work.title}』
+              </Link>{" "}
+              · {work.owner.display_name}
+              {work.visibility === "draft" && " · 임시 저장"}
             </p>
-          )}
+          </div>
+          <LineageLine lineage={lineage} />
+          <div className="mt-6 flex flex-col gap-3.5 sm:mt-10">
+            <p className="text-[13px] font-medium text-ink-3">
+              {chapter.position}장
+              {/* 갈래의 장: 고친 장은 원작과 비교, 새로 쓴 장은 원작에 없는 장 */}
+              {work.parent_work_id !== null && chapter.state === "modified" && (
+                <>
+                  {" · "}
+                  <Link href={`${base}/${chapter.position}/compare`} className="text-ink underline underline-offset-4">
+                    원작과 비교
+                  </Link>
+                </>
+              )}
+              {work.parent_work_id !== null && chapter.state === "new" && " · 원작에 없는 장"}
+            </p>
+            <h1 className="font-serif text-[27px] leading-[1.35] font-bold tracking-[-0.03em] break-keep sm:text-[34px]">
+              {chapter.title}
+            </h1>
+          </div>
         </header>
 
         <ReadingSize>
@@ -117,25 +129,30 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
           )}
         </ReadingSize>
 
-        <nav className="flex items-center justify-between gap-2 border-t pt-6" aria-label="장 이동">
-          {prev ? (
-            <Link href={`${base}/${prev.position}`} className={buttonVariants({ variant: "ghost" })}>
-              <ChevronLeft />
-              이전 장
+        <p className="py-4 text-center font-serif text-[15px] text-ink-3">— {chapter.position}장 끝 —</p>
+
+        <nav className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6" aria-label="장 이동">
+          <div className="flex items-center gap-2">
+            {prev && (
+              <Link href={`${base}/${prev.position}`} className={buttonVariants({ variant: "outline", size: "lg", className: "bg-transparent px-5" })}>
+                <ChevronLeft />
+                이전 장
+              </Link>
+            )}
+            <Link href={base} className={buttonVariants({ variant: "outline", size: "lg", className: "bg-transparent px-5" })}>
+              <List />
+              목차
             </Link>
-          ) : (
-            <span />
-          )}
-          <Link href={base} className="text-sm text-muted-foreground hover:underline">
-            목차
-          </Link>
+          </div>
           {next ? (
-            <Link href={`${base}/${next.position}`} className={buttonVariants({ variant: "default", className: "min-w-0" })}>
-              <span className="truncate">다음 장: {next.title}</span>
+            <Link href={`${base}/${next.position}`} className={buttonVariants({ size: "lg", className: "min-w-0 max-w-full" })}>
+              <span className="truncate">
+                다음 장: <span className="font-normal opacity-75">{next.title}</span>
+              </span>
               <ChevronRight />
             </Link>
           ) : (
-            <span className="text-sm text-muted-foreground">마지막 장입니다</span>
+            <span className="text-sm text-ink-3">마지막 장입니다</span>
           )}
         </nav>
 
@@ -155,8 +172,8 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
 
         {/* 공개 작품만 갈라질 수 있다(fork_work) */}
         {work.allow_fork && work.visibility === "public" && (
-          <section className="flex flex-col items-center gap-2 rounded-lg bg-muted/40 p-6 text-center">
-            <p className="text-sm text-muted-foreground">이 이야기, 여기서부터 당신 버전으로.</p>
+          <section className="flex flex-col items-center gap-4 rounded-card bg-kind-fork p-6 text-center sm:p-8" aria-label="갈라지기">
+            <p className="font-serif text-lg font-semibold tracking-[-0.02em] sm:text-xl">이 이야기, 여기서부터 당신 버전으로.</p>
             <ForkDialog
               workId={work.id}
               workTitle={work.title}
@@ -167,18 +184,19 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
             />
             {/* 갈래 지도와 같은 기준: 이 작품의 이 장에서 직접 갈라진 공개 갈래 */}
             {forkCount > 0 ? (
-              <Link href={`${base}/tree`} className="text-sm text-muted-foreground underline-offset-4 hover:underline">
+              <Link href={`${base}/tree`} className="text-[13px] text-ink-2 underline-offset-4 hover:underline">
                 이 장에서 갈라진 갈래 {forkCount.toLocaleString()}개 · 갈래 지도
               </Link>
             ) : (
-              <p className="text-sm text-muted-foreground">이 장에서 갈라진 갈래 0개</p>
+              <p className="text-[13px] text-ink-2">이 장에서 갈라진 갈래 0개</p>
             )}
           </section>
         )}
       </article>
 
-      <div className="hidden w-[160px] shrink-0 xl:block">
-        <div className="sticky top-6">
+      {/* 넓은 화면 오른쪽 칸: 160×600, 1280px 이상에서는 300×600. 스크롤을 따라 내려온다 */}
+      <div className="hidden w-[160px] shrink-0 pt-[108px] lg:block xl:w-[300px]">
+        <div className="sticky top-8">
           <AdSlot id="chapter-side" size="skyscraper" />
         </div>
       </div>

@@ -17,6 +17,8 @@ const card = (n: number): WorkCardData => ({
   visibility: "public",
   star_count: 0,
   fork_count: 0,
+  first_published_at: "2026-10-16T00:00:00Z",
+  created_at: "2026-10-15T00:00:00Z",
   owner: { handle: "writer", display_name: "작가" },
 });
 

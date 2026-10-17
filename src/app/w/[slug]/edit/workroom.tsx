@@ -150,7 +150,7 @@ function ChapterSidebar({
 
   return (
     <aside className="flex w-full shrink-0 flex-col gap-3 lg:sticky lg:top-6 lg:w-64">
-      <details ref={listRef} open className="group rounded-lg border lg:border-0" aria-label="장 목록">
+      <details ref={listRef} open className="group rounded-[20px] bg-surface lg:bg-transparent" aria-label="장 목록">
         <summary className="cursor-pointer px-3 py-2 text-sm font-medium lg:px-1">
           장 목록 ({order.length}개) · 지금 {current.position}장
         </summary>
@@ -174,7 +174,7 @@ function ChapterSidebar({
                   setDragging(null);
                 }}
                 onDragEnd={() => setDragging(null)}
-                className={`group/item flex items-center gap-1 rounded-md pr-1 ${active ? "bg-muted" : "hover:bg-muted/50"} ${dragging === i ? "opacity-50" : ""}`}
+                className={`group/item flex items-center gap-1 rounded-md pr-1 ${active ? "bg-surface shadow-ff-1" : "hover:bg-ink/5"} ${dragging === i ? "opacity-50" : ""}`}
               >
                 <GripVertical
                   aria-hidden
@@ -251,8 +251,9 @@ function IconButton({
 }
 
 function StateBadge({ state }: { state: ChapterListItem["state"] }) {
-  const tone = state === "inherited" ? "bg-muted text-muted-foreground" : "border border-foreground/20";
-  return <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[0.65rem] ${tone}`}>{CHAPTER_STATES[state]}</span>;
+  // 작품 대문의 장 배지와 같은 색: 물려받음 검정, 고침 흰 바탕 + 테두리, 새 장 연분홍
+  const tone = { inherited: "bg-ink text-surface", modified: "border border-ink bg-surface", new: "bg-kind-fork" }[state];
+  return <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[0.65rem] font-semibold ${tone}`}>{CHAPTER_STATES[state]}</span>;
 }
 
 // ────────────────────────────────────────────────────────────
@@ -436,7 +437,7 @@ function ChapterEditor({
       {draftNotice !== "none" && (
         <div
           role="status"
-          className="flex flex-wrap items-center gap-3 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
+          className="flex flex-wrap items-center gap-3 rounded-[20px] bg-kind-canon/50 px-4 py-3 text-sm text-ink"
         >
           <p className="flex-1">
             {draftNotice === "restorable"
@@ -454,7 +455,7 @@ function ChapterEditor({
 
       {/* 물려받은 장 */}
       {readOnly && (
-        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-dashed px-4 py-3 text-sm">
+        <div className="flex flex-wrap items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-kind-draft-line px-4 py-3 text-sm">
           <p className="flex-1 text-muted-foreground">
             원작에서 물려받은 장입니다. 원작의 갈라진 시점 그대로이며, 원작이 나중에 고쳐도 바뀌지 않습니다.
           </p>
@@ -505,7 +506,7 @@ function ChapterEditor({
       </div>
 
       {/* 모바일: 쓰기/미리보기 탭 */}
-      <div role="tablist" aria-label="편집 화면" className="flex gap-1 border-b lg:hidden">
+      <div role="tablist" aria-label="편집 화면" className="inline-flex gap-0.5 self-start rounded-full bg-mute p-1 lg:hidden">
         {(["write", "preview"] as const).map((t) => (
           <button
             key={t}
@@ -513,7 +514,7 @@ function ChapterEditor({
             role="tab"
             aria-selected={tab === t}
             onClick={() => setTab(t)}
-            className={`-mb-px border-b-2 px-3 py-2 text-sm ${tab === t ? "border-foreground font-medium" : "border-transparent text-muted-foreground"}`}
+            className={`h-9 rounded-full px-3.5 text-[13px] font-medium ${tab === t ? "bg-surface text-ink shadow-ff-1" : "text-ink-2"}`}
           >
             {t === "write" ? "쓰기" : "미리보기"}
           </button>
@@ -522,7 +523,7 @@ function ChapterEditor({
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div
-          className={`h-[60dvh] overflow-hidden rounded-lg border lg:block lg:h-[calc(100dvh-16rem)] ${tab === "write" ? "" : "hidden"} ${readOnly ? "bg-muted/30" : ""}`}
+          className={`h-[60dvh] overflow-hidden rounded-[20px] border border-line-soft lg:block lg:h-[calc(100dvh-16rem)] ${tab === "write" ? "" : "hidden"} ${readOnly ? "bg-mute/50" : "bg-surface"}`}
         >
           <MdEditor
             key={editorVersion}
@@ -534,12 +535,12 @@ function ChapterEditor({
           />
         </div>
         <div
-          className={`h-[60dvh] overflow-y-auto rounded-lg border px-5 py-4 lg:block lg:h-[calc(100dvh-16rem)] ${tab === "preview" ? "" : "hidden"}`}
+          className={`h-[60dvh] overflow-y-auto rounded-[20px] border border-line-soft bg-paper-read px-5 py-4 lg:block lg:h-[calc(100dvh-16rem)] ${tab === "preview" ? "" : "hidden"}`}
           aria-label="미리보기"
         >
           {peek ? (
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between gap-2 rounded-md bg-muted px-3 py-2 text-sm">
+              <div className="flex items-center justify-between gap-2 rounded-[14px] bg-mute px-3 py-2 text-sm">
                 <span>{peek.label} 보는 중</span>
                 <Button type="button" size="sm" variant="ghost" onClick={() => setPeek(null)}>
                   닫기
@@ -593,7 +594,7 @@ function ChapterEditor({
       </div>
 
       {/* 수정 기록 */}
-      <details className="rounded-lg border">
+      <details className="overflow-hidden rounded-[20px] bg-surface">
         <summary className="cursor-pointer px-4 py-3 text-sm font-medium">수정 기록 ({history.length})</summary>
         <ol className="flex flex-col divide-y border-t">
           {history.map((item) => {

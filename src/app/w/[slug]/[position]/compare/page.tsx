@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "원작과 비교" };
 // 본문은 마크다운으로 그리지 않고 원문 텍스트 그대로 보여 준다(React가 이스케이프한다).
 export default function ComparePage({ params }: PageProps<"/w/[slug]/[position]/compare">) {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-10">
+    <main className="ff-container flex flex-1 flex-col gap-6 pt-6 pb-20 sm:pt-10">
       <Suspense fallback={null}>
         <CompareView params={params} />
       </Suspense>
@@ -49,7 +49,7 @@ async function CompareView({ params }: Pick<PageProps<"/w/[slug]/[position]/comp
         </Link>{" "}
         · {work.owner.display_name}
       </p>
-      <h1 className="font-serif text-2xl font-bold tracking-tight">
+      <h1 className="font-serif text-[27px] leading-[1.35] font-bold tracking-[-0.03em] sm:text-[34px]">
         <span className="mr-2 text-muted-foreground">{position}장</span>
         {chapter.title}
         <span className="ml-3 align-middle text-base font-normal text-muted-foreground">원작과 비교</span>
@@ -125,7 +125,7 @@ function renderRows(rows: CompareRow[]): ReactNode[] {
       out.push(<Row key={i} row={rows[i]} />);
       out.push(
         <li key={`fold-${i}`}>
-          <details className="rounded-md border border-dashed">
+          <details className="rounded-[20px] border-[1.5px] border-dashed border-kind-draft-line">
             <summary className="cursor-pointer px-3 py-2 text-center text-sm text-muted-foreground">
               같은 문단 {run - 2}개 펼치기
             </summary>
@@ -235,9 +235,9 @@ function Para({ children, muted }: { children: ReactNode; muted?: boolean }) {
 }
 
 function Empty({ children }: { children: ReactNode }) {
-  return <p className="rounded-md border border-dashed px-3 py-2 text-sm text-muted-foreground">{children}</p>;
+  return <p className="rounded-[14px] border-[1.5px] border-dashed border-kind-draft-line px-3 py-2 text-sm text-ink-3">{children}</p>;
 }
 
 function Notice({ children }: { children: ReactNode }) {
-  return <p className="rounded-lg bg-muted/50 px-4 py-6 text-center text-sm text-muted-foreground">{children}</p>;
+  return <p className="rounded-card border-[1.5px] border-dashed border-kind-draft-line px-4 py-10 text-center text-sm text-ink-2">{children}</p>;
 }

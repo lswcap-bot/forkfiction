@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>울라의 길 작품 대문</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;family=Noto+Serif+KR:wght@400;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F2F1ED}
+*{box-sizing:border-box}
+.ff{font-family:'IBM Plex Sans KR',system-ui,sans-serif;color:#18181B;background:#F2F1ED;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+a{color:#18181B;text-decoration:none}a:hover{color:#4E4C47}
+h1,h2,h3,p{margin:0}
+button,select{font-family:inherit;color:inherit;cursor:pointer;margin:0}
+svg{display:block}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:16px;height:88px}
+.logo{font-size:23px;font-weight:700;letter-spacing:-0.04em}
+.logo span{font-weight:400}
+.nav{display:flex;align-items:center;gap:8px}
+.navlink{height:44px;padding:0 18px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.navlink svg{width:18px;height:18px}
+.icb{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid #D2CFC8;background:transparent;display:inline-grid;place-items:center;padding:0;position:relative}
+.icb svg{width:20px;height:20px}
+.dot{position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:#E5484D;border:2px solid #F2F1ED}
+.mep{height:44px;padding:0 16px 0 4px;border-radius:999px;border:1px solid #D2CFC8;background:#fff;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+.mep span{width:34px;height:34px;border-radius:50%;background:#DCD3F7;display:grid;place-items:center;font-size:13px}
+.btn{height:44px;padding:0 20px;border-radius:999px;border:1px solid transparent;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;white-space:nowrap}
+.btn svg{width:18px;height:18px}
+.btn-ink{background:#18181B;color:#fff}a.btn-ink:hover{color:#fff;background:#2C2C30}
+.btn-line{border-color:#CFCCC4;background:#fff}
+.btn-yel{background:#F1DC2E}
+.btn-pink{background:#F5D2EE}
+.btn-lg{height:52px;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600}
+.chip svg{width:14px;height:14px}
+.chip-ink{background:#18181B;color:#F1DC2E}
+.chip-w{background:rgba(255,255,255,.7)}
+.meta{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.6);font-size:13px;color:#4E4C47}
+.meta b{font-weight:600;color:#18181B}
+.bar{display:flex;gap:4px}
+.bar span{flex:1;height:6px;border-radius:3px;background:rgba(24,24,27,.17)}
+.bar span.d{background:#18181B}
+.panel{background:#fff;border-radius:28px}
+.node{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 16px 0 6px;border-radius:999px;font-size:14px;font-weight:600}
+.node .a{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:12px;font-weight:600}
+.node small{font-weight:400;color:#4E4C47;font-size:12px}
+.link{display:flex;align-items:center;gap:8px;font-size:12px;color:#4E4C47;font-weight:500;flex:none}
+.link i{display:block;width:32px;height:2px;background:#18181B;border-radius:1px}
+.link i.dash{background:none;border-top:2px dashed #9C998F;height:0}
+.tab{height:44px;padding:0 8px 0 18px;border-radius:999px;border:1px solid #D2CFC8;background:#fff;display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600}
+.tab .n{min-width:26px;height:26px;padding:0 8px;border-radius:999px;background:#ECEAE4;font-size:12px;display:inline-grid;place-items:center}
+.tab.on{background:#18181B;border-color:#18181B;color:#fff}
+.tab.on .n{background:#F1DC2E;color:#18181B}
+.chrow{display:grid;grid-template-columns:52px minmax(0,1fr) 92px 84px 20px;align-items:center;gap:12px;min-height:60px;padding:0 22px;border-top:1px solid #ECEAE4;font-size:13px;color:#4E4C47}
+.chrow:first-child{border-top:0}
+.chrow:hover{background:#FAF9F6;color:#4E4C47}
+.chrow .no{font-size:13px;font-weight:500;color:#6A6760}
+.chrow .t{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:600;color:#18181B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chrow svg{width:18px;height:18px;color:#6A6760}
+.b{justify-self:start;display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600}
+.b-inh{background:#18181B;color:#fff}
+.b-mod{background:#fff;color:#18181B;border:1.5px solid #18181B}
+.b-new{background:#F5D2EE;color:#18181B}
+.ad{height:100px;border-radius:24px;background:#E6E4DE;border:1px dashed #BEBBB3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#6A6760;font-size:12px}
+.ad b{font-size:11px;font-weight:600;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<div class="ff" style="min-height: 1640px">
+<div style="max-width: 1440px; margin: 0 auto; padding: 0 64px 80px">
+
+<header class="hdr">
+<a href="home.html" class="logo" aria-label="ForkFiction 홈">Fork<span>Fiction</span></a>
+<nav class="nav" aria-label="주 메뉴">
+<a class="navlink" href="works.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5v15M9.5 4.5v15M14 5l4.5 14.5"/></svg>전체 목록</a>
+<a class="btn btn-ink" href="upload.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>작품 올리기</a>
+<button class="icb" aria-label="알림 3개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
+<button class="mep" aria-label="내 프로필 이석원"><span aria-hidden="true">이</span>이석원</button>
+</nav>
+</header>
+
+<div style="max-width: 880px; margin: 0 auto">
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 16px 0 20px; font-size: 13px; color: #6A6760">
+<a class="icb" href="works.html" aria-label="목록으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+<nav aria-label="현재 위치" style="display: flex; gap: 8px"><a href="works.html" style="color: #6A6760">전체 목록</a><span aria-hidden="true">/</span><a href="work-original-map.html" style="color: #6A6760">칼의 여행</a><span aria-hidden="true">/</span><span style="color: #18181B; font-weight: 600">울라의 길</span></nav>
+</div>
+
+<section style="background: #F1DC2E; border-radius: 32px; padding: 32px 36px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px">
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="chip chip-w">갈래</span><span class="chip chip-ink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>정사</span></div>
+<button class="icb" style="border-color: rgba(24,24,27,.15); background: rgba(255,255,255,.45)" aria-label="작품 메뉴"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button>
+</div>
+<h1 style="font-family: 'Noto Serif KR', serif; font-size: 44px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.2">울라의 길</h1>
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 600" aria-hidden="true">바</span>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px"><b>바람결</b> <span style="color: #4E4C47">@baramgyeol</span></span><small style="font-size: 13px; color: #4E4C47">2026.10.12 갈라짐 · 2026.10.16 갱신</small></div>
+</div>
+<p style="font-size: 16px; line-height: 1.75; max-width: 680px">『칼의 여행』 8장 「범의 시간」에서 갈라져, 재하와 함께 길을 나선 대장장이의 딸 울라의 이야기로 다시 쓴 갈래. 울라는 열두 해 전 사라진 아버지의 흔적을 따라 압록강 너머 북방의 쇠 장인들을 찾아간다.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<span class="meta">라이선스 <b>CC BY-SA 4.0</b></span>
+<span class="meta">AI 활용 <b>맞춤법 교정만</b></span>
+<span class="meta">별 <b>1,204</b></span>
+<span class="meta">갈래 <b>5개</b></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px">
+<div class="bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span></div>
+<p style="font-size: 13px; color: #4E4C47">7장 물려받음 · 4장 새로 씀</p>
+</div>
+</section>
+
+<section aria-label="계보" class="panel" style="margin-top: 14px; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<span style="font-size: 13px; font-weight: 600; color: #6A6760; padding: 0 6px">계보</span>
+<a class="node" href="work-original-map.html" style="background: #DCD3F7"><span class="a" aria-hidden="true">ls</span>칼의 여행 <small>원작 · lswcap</small></a>
+<span class="link"><i></i>8장에서 갈라짐</span>
+<span class="node" style="background: #F1DC2E" aria-current="page"><span class="a" aria-hidden="true">바</span>울라의 길</span>
+<span class="link"><i class="dash"></i></span>
+<a class="node" href="#" style="background: #F5D2EE; padding-left: 16px">다시 갈라진 갈래 5개</a>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center">
+<a class="btn btn-ink btn-lg" href="read.html" style="padding: 0 28px">첫 장부터 읽기</a>
+<button class="btn btn-line btn-lg" aria-pressed="true"><svg viewBox="0 0 24 24" fill="#18181B" stroke="#18181B" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.6l2.5 5.2 5.7.8-4.1 4 1 5.7L12 16.6l-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>별 주기 · 1,204</button>
+<button class="btn btn-yel btn-lg" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>정사 인정됨</button>
+<button class="btn btn-pink btn-lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V7.2M12 12.5v4.3"/></svg>갈라지기</button>
+<span style="font-size: 12px; color: #6A6760; margin-left: 4px">정사 버튼은 원작자에게만 보임</span>
+</div>
+
+<div role="tablist" aria-label="작품 보기" style="display: flex; gap: 8px; margin: 40px 0 14px">
+<button class="tab on" role="tab" aria-selected="true">목차<span class="n">11</span></button>
+<a class="tab" role="tab" aria-selected="false" href="work-original-map.html">갈래 지도<span class="n">5</span></a>
+</div>
+
+<div style="display: flex; gap: 16px; align-items: center; margin: 0 4px 12px; font-size: 12px; color: #4E4C47; flex-wrap: wrap">
+<span style="display: inline-flex; align-items: center; gap: 6px"><span class="b b-inh">물려받음</span>원작 그대로</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><span class="b b-mod">고침</span>원작 장을 고쳐 씀</span>
+<span style="display: inline-flex; align-items: center; gap: 6px"><span class="b b-new">새 장</span>이 갈래에서 새로 씀</span>
+</div>
+<div class="panel" style="overflow: hidden">
+
+<a class="chrow" href="read.html">
+<span class="no">1장</span>
+<span class="t">시작의 검</span>
+<span class="b b-inh">물려받음</span>
+<span>9,840자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">2장</span>
+<span class="t">일곱 가지의 칼</span>
+<span class="b b-inh">물려받음</span>
+<span>10,120자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">3장</span>
+<span class="t">보이지 않는 날</span>
+<span class="b b-inh">물려받음</span>
+<span>10,310자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">4장</span>
+<span class="t">하늘이 실린 칼</span>
+<span class="b b-inh">물려받음</span>
+<span>9,760자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">5장</span>
+<span class="t">별무검</span>
+<span class="b b-inh">물려받음</span>
+<span>10,450자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">6장</span>
+<span class="t">천 번째 칼</span>
+<span class="b b-inh">물려받음</span>
+<span>9,980자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">7장</span>
+<span class="t">들어가지 못한 칼</span>
+<span class="b b-inh">물려받음</span>
+<span>10,600자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">8장</span>
+<span class="t">범의 시간</span>
+<span class="b b-mod">고침</span>
+<span>10,230자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">9장</span>
+<span class="t">국경의 대장간</span>
+<span class="b b-new">새 장</span>
+<span>9,820자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">10장</span>
+<span class="t">북방의 쇠 장인</span>
+<span class="b b-new">새 장</span>
+<span>10,040자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+<a class="chrow" href="read.html">
+<span class="no">11장</span>
+<span class="t">울라의 칼</span>
+<span class="b b-new">새 장</span>
+<span>8,910자</span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</a>
+
+</div>
+
+<aside class="ad" aria-label="광고" style="margin-top: 48px"><b>광고</b><span>목차 끝 · 728×90</span></aside>
+
+</div>
+</div>
+</div>
+</body>
+</html>

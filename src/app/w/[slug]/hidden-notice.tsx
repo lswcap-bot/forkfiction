@@ -3,7 +3,7 @@ import Link from "next/link";
 // 관리자가 숨긴 작품 안내. 숨긴 작품은 작가와 관리자만 읽을 수 있다(그 밖의 사람에게는 404).
 export function HiddenNotice({ isOwner }: { isOwner: boolean }) {
   return (
-    <section role="status" className="flex flex-col gap-1 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+    <section role="status" className="flex flex-col gap-1 rounded-card border border-destructive/30 bg-destructive/5 p-5">
       <h2 className="font-medium text-destructive">관리자에 의해 숨겨진 작품입니다</h2>
       {isOwner ? (
         <p className="text-sm text-muted-foreground">

@@ -14,7 +14,7 @@ const LIST_LIMIT = 100;
 // 누르면 읽음으로 바뀌고 그 작품으로 간다.
 export default function NotificationsPage() {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-12">
+    <main className="mx-auto flex w-full max-w-[912px] flex-1 flex-col gap-6 px-4 pt-6 pb-20 sm:pt-10">
       <Suspense fallback={null}>
         <NotificationList />
       </Suspense>
@@ -58,15 +58,15 @@ async function NotificationList() {
   return (
     <>
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">알림</h1>
+        <h1 className="text-[28px] font-bold tracking-[-0.04em] sm:text-4xl">알림</h1>
         {unread > 0 && <MarkAllReadButton />}
       </div>
       {data.length === 0 ? (
-        <p className="rounded-lg bg-muted/50 px-4 py-6 text-center text-sm text-muted-foreground">
+        <p className="rounded-card border-[1.5px] border-dashed border-kind-draft-line px-4 py-10 text-center text-sm leading-relaxed text-ink-2">
           아직 알림이 없습니다. 내 작품에서 갈래가 공개되거나 별을 받으면 여기에 알려 드립니다.
         </p>
       ) : (
-        <ol className="flex flex-col divide-y rounded-lg border">
+        <ol className="flex flex-col divide-y divide-line-soft overflow-hidden rounded-card bg-surface">
           {data.map((n) => {
             const view: NotificationView = {
               kind: n.kind,

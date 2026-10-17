@@ -37,7 +37,7 @@ export function ForkDialog({ workId, workTitle, position, licenseLabel, viewer, 
   if (viewer !== "ready") {
     const href = viewer === "anon" ? `/login?next=${encodeURIComponent(returnTo)}` : `/onboarding?next=${encodeURIComponent(returnTo)}`;
     return (
-      <Link href={href} className={buttonVariants({ variant: "outline" })}>
+      <Link href={href} className={buttonVariants({ size: "lg" })}>
         <GitFork />
         여기서 갈라지기
       </Link>
@@ -46,7 +46,7 @@ export function ForkDialog({ workId, workTitle, position, licenseLabel, viewer, 
 
   return (
     <Dialog>
-      <DialogTrigger render={<Button type="button" variant="outline" />}>
+      <DialogTrigger render={<Button type="button" size="lg" />}>
         <GitFork />
         여기서 갈라지기
       </DialogTrigger>

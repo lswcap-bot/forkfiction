@@ -26,18 +26,18 @@ export function NotificationItem({
       type="button"
       disabled={pending}
       onClick={() => startTransition(() => openNotification(id, href))}
-      className={`flex w-full items-start gap-3 px-4 py-3 text-left hover:bg-muted/50 disabled:opacity-60 ${unread ? "bg-muted/30" : ""}`}
+      className={`flex min-h-[60px] w-full items-start gap-3 px-5 py-4 text-left hover:bg-[#FAF9F6] disabled:opacity-60 ${unread ? "bg-kind-original/25" : ""}`}
     >
       <span
         aria-hidden
         className={`mt-1.5 size-2 shrink-0 rounded-full ${unread ? "bg-destructive" : "bg-transparent"}`}
       />
       <span className="flex flex-col gap-0.5">
-        <span className={unread ? "font-medium" : "text-muted-foreground"}>
+        <span className={unread ? "font-semibold" : "text-ink-2"}>
           {unread && <span className="sr-only">안 읽음: </span>}
           {text}
         </span>
-        <time dateTime={createdAt} className="text-xs text-muted-foreground">
+        <time dateTime={createdAt} className="text-xs text-ink-3">
           {dateFormat.format(new Date(createdAt))}
         </time>
       </span>

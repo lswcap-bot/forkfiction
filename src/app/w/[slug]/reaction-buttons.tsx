@@ -25,7 +25,7 @@ export function StarButton({
   if (viewer !== "ready") {
     const href = `/${viewer === "anon" ? "login" : "onboarding"}?next=${encodeURIComponent(returnTo)}`;
     return (
-      <Link href={href} className={buttonVariants({ variant: "outline", size: "sm" })}>
+      <Link href={href} className={buttonVariants({ variant: "outline", size: "lg" })}>
         <Star />
         별 주기
       </Link>
@@ -36,8 +36,8 @@ export function StarButton({
     <span className="inline-flex items-center gap-2">
       <Button
         type="button"
-        variant={starred ? "default" : "outline"}
-        size="sm"
+        variant="outline"
+        size="lg"
         aria-pressed={starred}
         disabled={pending}
         onClick={() => {
@@ -66,9 +66,9 @@ export function CanonButton({ workId, isCanon }: { workId: string; isCanon: bool
       <Button
         type="button"
         variant="outline"
-        size="sm"
+        size="lg"
         disabled={pending}
-        className={isCanon ? undefined : "border-amber-400 text-amber-900 hover:bg-amber-50 dark:text-amber-200 dark:hover:bg-amber-900/30"}
+        className={isCanon ? "border-transparent bg-kind-canon hover:bg-kind-canon hover:brightness-95" : undefined}
         onClick={() => {
           if (isCanon && !confirm("이 갈래의 정사 배지를 뗄까요?")) return;
           setError(null);

@@ -46,7 +46,7 @@ async function WorkroomLoader({ params, searchParams }: PageProps<"/w/[slug]/edi
     <header className="flex flex-col gap-2">
       <LineageLine lineage={lineage} />
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="font-serif text-2xl font-bold tracking-tight">
+        <h1 className="font-serif text-[27px] leading-[1.3] font-bold tracking-[-0.03em]">
           <span className="mr-2 text-base font-normal text-muted-foreground">작업실</span>
           {work.title}
         </h1>

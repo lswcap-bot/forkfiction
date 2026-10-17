@@ -5,6 +5,7 @@
 
 ## 스택
 - Next.js App Router + TypeScript(strict), Tailwind, shadcn/ui
+- 디자인: design/(Claude Design 시안, 참고 자료)의 토큰을 src/app/tokens.css(--ff-*)에 옮겨 globals.css의 Tailwind 테마(bg-paper, bg-kind-fork 등)와 shadcn 변수로 잇는다. 색·모서리는 토큰으로 쓰고, 시안 HTML을 복사해 넣지 않는다. 글꼴은 next/font(IBM Plex Sans KR, Noto Serif KR)
 - Supabase(Postgres, Auth Google, RLS). 클라이언트는 @supabase/ssr
 - 테스트: Vitest(단위), Playwright(흐름)
 

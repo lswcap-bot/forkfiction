@@ -47,8 +47,8 @@ export function OnboardingForm({ next, defaultDisplayName }: Props) {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="handle">필명</Label>
-        <div className="flex items-center rounded-lg border border-input focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-          <span className="pl-2.5 text-sm text-muted-foreground">@</span>
+        <div className="flex h-11 items-center rounded-[14px] border border-line bg-surface focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
+          <span className="pl-3.5 text-sm text-ink-3">@</span>
           <Input
             id="handle"
             name="handle"

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState, useTransition } from "react";
-import { ChevronDown, ChevronUp, Eye, EyeOff, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye, EyeOff, FileText, Trash2 } from "lucide-react";
 import { Markdown } from "@/components/markdown";
 import { SlugField, useSlugCheck } from "@/components/slug-field";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,10 @@ type Draft = { key: number; title: string; body: string };
 const FILE_MAX_BYTES = 3 * 1024 * 1024;
 
 const textareaClass =
-  "w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-2 text-base outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30";
+  "w-full min-w-0 rounded-[20px] border border-line bg-[#FAF9F6] px-5 py-4 text-base leading-[1.75] outline-none placeholder:text-ink-3 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm";
+// 시안의 흰 패널(칸마다 하나)과 칸 제목
+const PANEL = "flex flex-col gap-6 rounded-[28px] bg-surface p-5 sm:gap-7 sm:rounded-panel sm:p-8";
+const H2 = "text-lg font-bold tracking-[-0.03em] sm:text-xl";
 
 export function UploadForm() {
   const ids = useId();
@@ -131,21 +134,27 @@ export function UploadForm() {
   }
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-4">
       {/* 1. 원고 */}
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">1. 원고</h2>
-        <div className="flex flex-col gap-2">
+      <section className={PANEL}>
+        <h2 className={H2}>1. 원고</h2>
+        <div className="flex flex-col gap-2.5">
           <Label htmlFor={`${ids}-file`}>MD 파일</Label>
-          <Input
-            id={`${ids}-file`}
-            type="file"
-            accept=".md,.markdown,.txt,text/markdown,text/plain"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) void readFile(file);
-            }}
-          />
+          <div className="flex items-center gap-4 rounded-[24px] border-[1.5px] border-dashed border-kind-draft-line bg-paper-read p-4 sm:gap-[18px] sm:px-6 sm:py-[22px]">
+            <span className="hidden size-[52px] shrink-0 place-items-center rounded-2xl bg-kind-original sm:grid" aria-hidden>
+              <FileText className="size-6" />
+            </span>
+            <Input
+              id={`${ids}-file`}
+              type="file"
+              accept=".md,.markdown,.txt,text/markdown,text/plain"
+              className="h-auto border-0 bg-transparent px-0 py-0 focus-visible:ring-0"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void readFile(file);
+              }}
+            />
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor={`${ids}-source`}>또는 본문 붙여넣기</Label>
@@ -157,21 +166,21 @@ export function UploadForm() {
             placeholder={"# 작품 제목\n\n## 1장 제목\n\n본문…\n\n## 2장 제목\n\n본문…"}
             className={`${textareaClass} font-mono`}
           />
-          <p className="text-sm text-muted-foreground">
+          <p className="text-[13px] leading-[1.65] text-ink-2">
             맨 위 <code>#</code>이 하나면 작품 제목, 그 아래 <code>##</code>를 장으로 봅니다.{" "}
             <code>#</code>이 여러 개면 각 <code>#</code>을 장으로 보되, 맨 위 <code>#</code> 아래에 본문이 없으면
             작품 제목으로 봅니다.
           </p>
-          <details open className="rounded-lg border text-sm">
-            <summary className="cursor-pointer px-3 py-2 font-medium">MD 형식 예시</summary>
-            <div className="flex flex-col gap-2 border-t px-3 py-3">
-              <pre className="overflow-x-auto rounded-md bg-muted px-3 py-2 font-mono text-xs leading-relaxed">{MD_EXAMPLE}</pre>
-              <p className="text-muted-foreground">
+          <details open className="mt-2 rounded-[24px] bg-paper p-1.5 text-sm">
+            <summary className="flex h-12 cursor-pointer items-center px-4 font-semibold">MD 형식 예시</summary>
+            <div className="flex flex-col gap-3.5 rounded-[20px] bg-surface px-5 py-5 sm:px-[22px]">
+              <pre className="overflow-x-auto rounded-[14px] bg-paper-read px-4 py-4 font-mono text-[13px] leading-[1.8] whitespace-pre-wrap">{MD_EXAMPLE}</pre>
+              <p className="text-[13px] leading-[1.7] text-ink-2">
                 이렇게 쓰면 작품 제목은 『칼의 여행』, 장은 「떠나는 날」「강가에서」 두 개가 됩니다. 장 제목 앞의
                 &lsquo;1장 —&rsquo;은 장 번호와 겹치므로 떼고, 첫 장 앞에 쓴 글은 &lsquo;머리말&rsquo; 장이 됩니다.
               </p>
               <div>
-                <Button type="button" variant="outline" size="sm" disabled={!!source.trim()} onClick={() => setSource(MD_EXAMPLE)}>
+                <Button type="button" variant="outline" disabled={!!source.trim()} onClick={() => setSource(MD_EXAMPLE)}>
                   예시를 붙여넣기 칸에 넣기
                 </Button>
               </div>
@@ -180,7 +189,7 @@ export function UploadForm() {
         </div>
         {sourceError && <p className="text-sm text-destructive">{sourceError}</p>}
         <div>
-          <Button type="button" onClick={runSplit} disabled={!source.trim()}>
+          <Button type="button" size="lg" onClick={runSplit} disabled={!source.trim()}>
             {split ? "다시 나누기" : "장 나누기"}
           </Button>
         </div>
@@ -189,11 +198,11 @@ export function UploadForm() {
       {chapters && (
         <>
           {/* 2. 장 확인 */}
-          <section className="flex flex-col gap-3">
+          <section className={PANEL}>
             <div className="flex items-baseline justify-between gap-4">
-              <h2 className="text-lg font-semibold">2. 장 확인 ({chapters.length}개)</h2>
+              <h2 className={H2}>2. 장 확인 ({chapters.length}개)</h2>
               {split && chapters !== split && (
-                <Button type="button" variant="ghost" size="sm" onClick={() => setChapters(split)}>
+                <Button type="button" variant="ghost" onClick={() => setChapters(split)}>
                   처음 나눈 대로
                 </Button>
               )}
@@ -207,7 +216,7 @@ export function UploadForm() {
             {chapters.length > CHAPTERS_MAX && (
               <p className="text-sm text-destructive">장은 {CHAPTERS_MAX}개까지 올릴 수 있습니다.</p>
             )}
-            <ol className="flex flex-col divide-y rounded-lg border">
+            <ol className="flex flex-col divide-y divide-line-soft overflow-hidden rounded-[24px] border border-line-soft">
               {chapters.map((ch, i) => (
                 <li key={ch.key} className="flex flex-col gap-2 p-3">
                   <div className="flex items-center gap-2">
@@ -255,7 +264,7 @@ export function UploadForm() {
                     <p className="pl-12 text-sm text-muted-foreground">본문이 비어 있습니다.</p>
                   )}
                   {openKey === ch.key && (
-                    <div className="reading mx-auto max-h-96 w-full overflow-y-auto rounded-md bg-muted/40 p-4">
+                    <div className="reading mx-auto max-h-96 w-full overflow-y-auto rounded-[20px] bg-paper-read p-5">
                       <Markdown>{ch.body}</Markdown>
                     </div>
                   )}
@@ -265,8 +274,8 @@ export function UploadForm() {
           </section>
 
           {/* 3. 작품 정보 */}
-          <section className="flex flex-col gap-6">
-            <h2 className="text-lg font-semibold">3. 작품 정보</h2>
+          <section className={PANEL}>
+            <h2 className={H2}>3. 작품 정보</h2>
 
             <div className="flex flex-col gap-2">
               <Label htmlFor={`${ids}-title`}>제목</Label>
@@ -377,7 +386,7 @@ export function UploadForm() {
           </section>
 
           {/* 4. 저장 */}
-          <section className="flex flex-col gap-3 border-t pt-6">
+          <section className={PANEL}>
             <p className="text-sm text-muted-foreground">
               공개하면 누구나 읽을 수 있고 작품 주소는 더 이상 바꿀 수 없습니다.
               {license !== "ARR" && allowFork && (

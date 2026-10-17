@@ -2,9 +2,9 @@
 //   /works?tab=fork&sort=stars&page=2  기본값(전체·최신순·1쪽)은 주소에서 뺀다.
 
 export const WORKS_TABS = [
+  { value: "all", label: "전체" },
   { value: "original", label: "원작" },
   { value: "fork", label: "갈래" },
-  { value: "all", label: "전체" },
 ] as const;
 export type WorksTab = (typeof WORKS_TABS)[number]["value"];
 

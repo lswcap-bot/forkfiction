@@ -1,0 +1,76 @@
+/* ForkFiction 디자인 토큰. 원본은 design/design-tokens.css(Claude Design 시안)이고, 글꼴만 next/font 변수로 바꿨다. */
+:root {
+  /* 바탕·글자 */
+  --ff-paper: #F2F1ED;          /* 앱 전체 바탕 (웜 그레이) */
+  --ff-paper-read: #F7F6F2;     /* 장 읽기 화면 바탕 */
+  --ff-surface: #FFFFFF;        /* 패널, 알약, 임시 저장 카드 */
+  --ff-ink: #18181B;            /* 본문 글자, 활성 알약, 물려받은 장 칸 */
+  --ff-ink-2: #4E4C47;          /* 카드 안 보조 글자 */
+  --ff-ink-3: #6A6760;          /* 라벨·캡션 */
+  --ff-line: #D2CFC8;           /* 원형 버튼·알약 테두리 */
+  --ff-line-soft: #ECEAE4;      /* 목록 구분선, 배지 바탕 */
+  --ff-mute: #E6E4DE;           /* 광고 상자, 정렬 바탕 */
+  --ff-alert: #E5484D;          /* 알림 점 */
+
+  /* 작품 종류 (카드 바탕) */
+  --ff-kind-original: #DCD3F7;  /* 원작 · 연보라 */
+  --ff-kind-fork: #F5D2EE;      /* 갈래 · 연분홍 (갈라지기 버튼에도 사용) */
+  --ff-kind-canon: #F1DC2E;     /* 정사 · 노랑 (활성 알약 개수 배지에도 사용) */
+  --ff-kind-draft-line: #C9C6BE;/* 임시 저장 · 흰 카드 + 1.5px 테두리 */
+  --ff-original-line: #C9BCF0;  /* 홈 칸 머리 4px 선 */
+  --ff-canon-row: #FBF4C2;      /* 갈래 지도에서 정사 줄 강조 */
+
+  /* 진행 막대 */
+  --ff-bar-inherited: #18181B;              /* 원작에서 물려받은 장 */
+  --ff-bar-new: rgba(24, 24, 27, 0.17);     /* 고친 장·새로 쓴 장 */
+  --ff-bar-height: 5px;
+  --ff-bar-gap: 4px;
+
+  /* 글꼴 */
+  --ff-font-ui: var(--font-plex-kr), system-ui, sans-serif;
+  --ff-font-reading: var(--font-noto-serif-kr), serif;
+  --ff-font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* 글자 크기 */
+  --ff-text-2xs: 11px;   /* 칩 (600) */
+  --ff-text-xs: 12px;    /* 캡션, 막대 아래 "7장 물려받음 · 4장 새로 씀" */
+  --ff-text-sm: 13px;    /* 메타, 눈썹 글 (500) */
+  --ff-text-md: 14px;    /* UI, 버튼 (500/600) */
+  --ff-text-card: 16px;  /* 카드 제목 (700) */
+  --ff-text-section: 20px; /* 칸 제목 (700) */
+  --ff-text-reading: 19px; /* 장 본문, 모바일 17px, 행간 1.95 / 1.9 */
+  --ff-text-chapter: 34px; /* 장 제목, 모바일 27px */
+  --ff-text-stat: 40px;  /* 통계 숫자 (300, -0.04em), 모바일 28px */
+  --ff-text-display: 48px; /* 홈 제목·작품 제목, 모바일 32px */
+  --ff-reading-measure: 38em; /* 한 줄 약 40자 */
+  --ff-reading-leading: 1.95;
+
+  /* 모서리 */
+  --ff-radius-bar: 3px;
+  --ff-radius-sm: 12px;
+  --ff-radius-md: 20px;
+  --ff-radius-ad: 24px;
+  --ff-radius-card: 28px;
+  --ff-radius-panel: 32px;
+  --ff-radius-pill: 999px;
+
+  /* 간격 */
+  --ff-space-1: 4px;
+  --ff-space-2: 8px;
+  --ff-space-3: 12px;
+  --ff-space-4: 16px;   /* 카드 사이, 모바일 좌우 여백 */
+  --ff-space-5: 20px;
+  --ff-space-6: 32px;
+  --ff-space-7: 48px;   /* 통계 사이 */
+  --ff-space-8: 64px;   /* 데스크톱 좌우 여백 */
+
+  /* 크기 */
+  --ff-touch: 44px;     /* 원형 버튼·알약 높이 */
+  --ff-touch-lg: 52px;  /* 주요 버튼 */
+  --ff-avatar: 38px;
+
+  /* 그림자 (카드는 평평하게, 그림자 없음) */
+  --ff-shadow-0: none;
+  --ff-shadow-1: 0 1px 2px rgba(24, 24, 27, 0.08);                                    /* 선택된 정렬 */
+  --ff-shadow-2: 0 1px 2px rgba(24, 24, 27, 0.06), 0 12px 32px rgba(24, 24, 27, 0.10); /* ⋯ 메뉴, 알림 팝오버 */
+}

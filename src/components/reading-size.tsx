@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
 
 // 장 읽기 글자 크기. 고른 크기는 이 브라우저에 기억한다.
 const SIZES = [
@@ -12,6 +11,9 @@ const SIZES = [
 ];
 const DEFAULT = 1;
 const STORAGE_KEY = "ff:reading-size";
+// 회색 트랙 안의 '가' 버튼(44px). 더 줄이거나 키울 수 없으면 흐리게 둔다.
+const STEP =
+  "grid size-11 place-items-center rounded-full font-serif text-ink-2 transition-colors hover:bg-surface hover:text-ink hover:shadow-ff-1 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-40";
 
 function load(): number {
   try {
@@ -40,28 +42,28 @@ export function ReadingSize({ children }: { children: ReactNode }) {
 
   return (
     <div style={{ "--reading-size": SIZES[index].value } as CSSProperties} className="flex flex-col gap-8">
-      <div className="flex items-center justify-end gap-1" role="group" aria-label="글자 크기">
-        <span className="mr-1 text-xs text-muted-foreground">글자 크기</span>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon-sm"
-          aria-label="글자 작게"
-          disabled={index === 0}
-          onClick={() => change(index - 1)}
-        >
-          <span className="text-xs">가</span>
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon-sm"
-          aria-label="글자 크게"
-          disabled={index === SIZES.length - 1}
-          onClick={() => change(index + 1)}
-        >
-          <span className="text-base">가</span>
-        </Button>
+      <div className="flex items-center justify-end gap-2" role="group" aria-label="글자 크기">
+        <span className="text-xs text-ink-3">글자 크기</span>
+        <div className="inline-flex gap-0.5 rounded-full bg-line-soft p-[3px]">
+          <button
+            type="button"
+            aria-label="글자 작게"
+            disabled={index === 0}
+            onClick={() => change(index - 1)}
+            className={STEP}
+          >
+            <span className="text-[13px]">가</span>
+          </button>
+          <button
+            type="button"
+            aria-label="글자 크게"
+            disabled={index === SIZES.length - 1}
+            onClick={() => change(index + 1)}
+            className={STEP}
+          >
+            <span className="text-[19px]">가</span>
+          </button>
+        </div>
         <span className="sr-only" aria-live="polite">
           {SIZES[index].label}
         </span>

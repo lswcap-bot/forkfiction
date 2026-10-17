@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PillLink, SegmentedNav, StatRow } from "@/components/ff";
 import { WorkCardGrid } from "@/components/work-card";
-import { getWorksPage } from "@/lib/discover";
+import { cn } from "@/lib/utils";
+import { getSiteStats, getWorksPage } from "@/lib/discover";
 import {
   pageItems,
   parseWorksQuery,
@@ -31,9 +33,8 @@ export async function generateMetadata({ searchParams }: PageProps<"/works">): P
 
 export default function WorksPage({ searchParams }: PageProps<"/works">) {
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight">전체 목록</h1>
-      <Suspense fallback={<div className="h-96 rounded-lg bg-muted/40" />}>
+    <main className="ff-container flex flex-1 flex-col gap-6 pb-20">
+      <Suspense fallback={<div className="h-96 rounded-card bg-mute/60" />}>
         <WorksList searchParams={searchParams} />
       </Suspense>
     </main>
@@ -42,44 +43,57 @@ export default function WorksPage({ searchParams }: PageProps<"/works">) {
 
 async function WorksList({ searchParams }: Pick<PageProps<"/works">, "searchParams">) {
   const q = parseWorksQuery(await searchParams);
-  const { works, total } = await getWorksPage(q);
+  const [{ works, total }, stats] = await Promise.all([getWorksPage(q), getSiteStats()]);
   const pages = Math.ceil(total / WORKS_PAGE_SIZE);
+  const tabCount = { all: stats.originals + stats.forks, original: stats.originals, fork: stats.forks };
 
   return (
     <>
-      <nav className="flex gap-1 border-b" aria-label="작품 종류">
+      <header className="flex flex-col gap-5 pt-6 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-8 sm:pt-10">
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[13px] font-medium text-ink-3">작품 둘러보기</p>
+          <h1 className="text-[28px] leading-tight font-bold tracking-[-0.05em] sm:text-4xl">전체 목록</h1>
+        </div>
+        <StatRow
+          items={[
+            { label: "원작", value: stats.originals },
+            { label: "갈래", value: stats.forks },
+            { label: "이번 주 새 갈래", value: stats.newForksWeek },
+          ]}
+        />
+      </header>
+
+      <nav className="-mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0" aria-label="작품 종류">
         {WORKS_TABS.map((t) => (
-          <Link
+          <PillLink
             key={t.value}
             href={worksHref({ ...q, tab: t.value, page: 1 })}
-            aria-current={q.tab === t.value ? "page" : undefined}
-            className={`-mb-px border-b-2 px-3 py-2 text-sm ${q.tab === t.value ? "border-foreground font-medium" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+            current={q.tab === t.value}
+            count={tabCount[t.value]}
           >
             {t.label}
-          </Link>
+          </PillLink>
         ))}
       </nav>
 
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <p className="text-sm text-muted-foreground tabular-nums">공개된 작품 {total.toLocaleString()}개</p>
-        <nav className="flex flex-wrap gap-1" aria-label="정렬">
-          {WORKS_SORTS.map((s) => (
-            <Link
-              key={s.value}
-              href={worksHref({ ...q, sort: s.value, page: 1 })}
-              aria-current={q.sort === s.value ? "page" : undefined}
-              className={`rounded-full border px-3 py-1 text-sm ${q.sort === s.value ? "border-foreground bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              {s.label}
-            </Link>
-          ))}
-        </nav>
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <p className="text-[13px] font-medium text-ink-3 tabular-nums">
+          공개된 작품 <span className="text-ink">{total.toLocaleString()}개</span>
+        </p>
+        <SegmentedNav
+          label="정렬"
+          items={WORKS_SORTS.map((s) => ({
+            href: worksHref({ ...q, sort: s.value, page: 1 }),
+            label: s.label,
+            current: q.sort === s.value,
+          }))}
+        />
       </div>
 
       {works.length === 0 && q.page > 1 ? (
-        <p className="rounded-lg bg-muted/50 px-4 py-6 text-center text-sm text-muted-foreground">
+        <p className="rounded-card border-[1.5px] border-dashed border-kind-draft-line px-4 py-10 text-center text-sm text-ink-2">
           이 페이지에는 작품이 없습니다.{" "}
-          <Link href={worksHref({ ...q, page: 1 })} className="underline underline-offset-4">
+          <Link href={worksHref({ ...q, page: 1 })} className="font-semibold underline underline-offset-4">
             첫 페이지로
           </Link>
         </p>
@@ -93,23 +107,23 @@ async function WorksList({ searchParams }: Pick<PageProps<"/works">, "searchPara
 }
 
 function Pagination({ q, pages }: { q: WorksQuery; pages: number }) {
-  const cell = "flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-sm tabular-nums";
+  const cell = "flex size-11 items-center justify-center rounded-full text-sm font-medium tabular-nums";
   const prev = q.page > 1 ? Math.min(q.page - 1, pages) : null;
   const next = q.page < pages ? q.page + 1 : null;
   return (
     <nav className="flex flex-wrap items-center justify-center gap-1 pt-2" aria-label="쪽 이동">
       {prev ? (
-        <Link href={worksHref({ ...q, page: prev })} className={`${cell} hover:bg-muted`} aria-label="이전 쪽">
+        <Link href={worksHref({ ...q, page: prev })} className={cn(cell, "hover:bg-ink/5")} aria-label="이전 쪽">
           <ChevronLeft className="size-4" />
         </Link>
       ) : (
-        <span className={`${cell} text-muted-foreground/40`} aria-hidden>
+        <span className={cn(cell, "text-ink-3/40")} aria-hidden>
           <ChevronLeft className="size-4" />
         </span>
       )}
       {pageItems(Math.min(q.page, pages), pages).map((p, i) =>
         p === "…" ? (
-          <span key={`gap-${i}`} className={`${cell} text-muted-foreground`} aria-hidden>
+          <span key={`gap-${i}`} className={cn(cell, "text-ink-3")} aria-hidden>
             …
           </span>
         ) : (
@@ -118,18 +132,18 @@ function Pagination({ q, pages }: { q: WorksQuery; pages: number }) {
             href={worksHref({ ...q, page: p })}
             aria-current={p === q.page ? "page" : undefined}
             aria-label={`${p}쪽`}
-            className={`${cell} ${p === q.page ? "bg-foreground font-medium text-background" : "hover:bg-muted"}`}
+            className={cn(cell, p === q.page ? "bg-ink text-surface" : "hover:bg-ink/5")}
           >
             {p}
           </Link>
         ),
       )}
       {next ? (
-        <Link href={worksHref({ ...q, page: next })} className={`${cell} hover:bg-muted`} aria-label="다음 쪽">
+        <Link href={worksHref({ ...q, page: next })} className={cn(cell, "hover:bg-ink/5")} aria-label="다음 쪽">
           <ChevronRight className="size-4" />
         </Link>
       ) : (
-        <span className={`${cell} text-muted-foreground/40`} aria-hidden>
+        <span className={cn(cell, "text-ink-3/40")} aria-hidden>
           <ChevronRight className="size-4" />
         </span>
       )}
