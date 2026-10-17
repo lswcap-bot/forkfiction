@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { splitChapters } from "./split-chapters";
+import { MD_EXAMPLE, splitChapters } from "./split-chapters";
 
 const md = (...lines: string[]) => lines.join("\n");
 
@@ -133,5 +133,13 @@ describe("splitChapters", () => {
       "쌍룡",
     ]);
     expect(result.chapters[0].body.startsWith("## 구성\n")).toBe(true);
+  });
+});
+
+describe("MD_EXAMPLE", () => {
+  it("/new 화면의 설명대로 작품 제목 하나와 장 두 개로 나뉜다", () => {
+    const result = splitChapters(MD_EXAMPLE);
+    expect(result.title).toBe("칼의 여행");
+    expect(result.chapters.map((c) => c.title)).toEqual(["떠나는 날", "강가에서"]);
   });
 });

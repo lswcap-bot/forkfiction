@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MD_EXAMPLE } from "@/lib/split-chapters";
 import { randomSlug, titleToSlug } from "@/lib/slug";
 import { splitChapters } from "@/lib/split-chapters";
 import {
@@ -161,6 +162,21 @@ export function UploadForm() {
             <code>#</code>이 여러 개면 각 <code>#</code>을 장으로 보되, 맨 위 <code>#</code> 아래에 본문이 없으면
             작품 제목으로 봅니다.
           </p>
+          <details open className="rounded-lg border text-sm">
+            <summary className="cursor-pointer px-3 py-2 font-medium">MD 형식 예시</summary>
+            <div className="flex flex-col gap-2 border-t px-3 py-3">
+              <pre className="overflow-x-auto rounded-md bg-muted px-3 py-2 font-mono text-xs leading-relaxed">{MD_EXAMPLE}</pre>
+              <p className="text-muted-foreground">
+                이렇게 쓰면 작품 제목은 『칼의 여행』, 장은 「떠나는 날」「강가에서」 두 개가 됩니다. 장 제목 앞의
+                &lsquo;1장 —&rsquo;은 장 번호와 겹치므로 떼고, 첫 장 앞에 쓴 글은 &lsquo;머리말&rsquo; 장이 됩니다.
+              </p>
+              <div>
+                <Button type="button" variant="outline" size="sm" disabled={!!source.trim()} onClick={() => setSource(MD_EXAMPLE)}>
+                  예시를 붙여넣기 칸에 넣기
+                </Button>
+              </div>
+            </div>
+          </details>
         </div>
         {sourceError && <p className="text-sm text-destructive">{sourceError}</p>}
         <div>

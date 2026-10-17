@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Bell } from "lucide-react";
+import { Bell, PenLine } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -27,22 +27,29 @@ async function UserMenu() {
 
   if (!viewer) {
     return (
-      <Link href="/login" className={buttonVariants({ variant: "outline" })}>
-        로그인
-      </Link>
+      <div className="flex items-center gap-1">
+        <UploadLink href="/login?next=/new" />
+        <Link href="/login" className={buttonVariants({ variant: "outline" })}>
+          로그인
+        </Link>
+      </div>
     );
   }
 
   if (!viewer.profile) {
     return (
-      <Link href="/onboarding" className={buttonVariants()}>
-        필명 정하기
-      </Link>
+      <div className="flex items-center gap-1">
+        <UploadLink href="/onboarding?next=/new" />
+        <Link href="/onboarding" className={buttonVariants()}>
+          필명 정하기
+        </Link>
+      </div>
     );
   }
 
   return (
     <div className="flex items-center gap-1">
+      <UploadLink href="/new" />
       <NotificationBell />
       <UserMenuDropdown
         handle={viewer.profile.handle}
@@ -50,6 +57,17 @@ async function UserMenu() {
         isAdmin={viewer.profile.is_admin}
       />
     </div>
+  );
+}
+
+// 작품 올리기: 로그인 전이면 로그인(필명 전이면 필명 정하기)을 거쳐 /new로 돌아온다.
+// 좁은 화면에서는 아이콘만 보인다.
+function UploadLink({ href }: { href: string }) {
+  return (
+    <Link href={href} className={buttonVariants({ variant: "ghost" })} aria-label="작품 올리기">
+      <PenLine />
+      <span className="hidden sm:inline">작품 올리기</span>
+    </Link>
   );
 }
 

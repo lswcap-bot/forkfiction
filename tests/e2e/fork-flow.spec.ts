@@ -24,7 +24,9 @@ test("올리기부터 갈래 지도까지", async ({ browser }) => {
 
   // ── A: 로그인한 상태로 올리기 ──
   const a = await as(browser, run.users.a.storageState);
-  await a.page.goto("/new");
+  await a.page.goto("/");
+  await a.page.getByRole("banner").getByRole("link", { name: "작품 올리기" }).click();
+  await a.page.waitForURL(/\/new$/);
   await expect(a.page.getByRole("button", { name: run.users.a.displayName })).toBeVisible();
   await a.page.getByLabel("또는 본문 붙여넣기").fill(md);
   await a.page.getByRole("button", { name: "장 나누기" }).click();

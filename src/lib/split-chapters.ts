@@ -11,6 +11,17 @@ export type SplitResult = { title: string | null; chapters: SplitChapter[] };
 
 export const PREFACE_TITLE = "머리말";
 
+/** /new 화면에 보여 주는 MD 형식 예시. 아래 규칙대로 나뉘는지 테스트로 확인한다. */
+export const MD_EXAMPLE = `# 칼의 여행
+
+## 1장 — 떠나는 날
+
+새벽 안개가 마을을 덮고 있었다.
+
+## 2장 — 강가에서
+
+강물은 생각보다 차가웠다.`;
+
 type Heading = { line: number; level: 1 | 2; text: string };
 
 const HEADING = /^ {0,3}(#{1,2})[ \t]+(.*?)(?:[ \t]+#+)?[ \t]*$/;

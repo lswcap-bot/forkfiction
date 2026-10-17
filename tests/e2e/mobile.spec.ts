@@ -13,7 +13,8 @@ test.use({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true
 type Run = ReturnType<typeof readRun>;
 // 실행 정보(run.json)는 global setup이 만들므로 테스트 안에서 읽는다
 const screens: { name: string; path: (r: Run) => string; user?: "a" | "b"; expectText?: string }[] = [
-  { name: "home", path: () => "/", expectText: "새 원작" },
+  { name: "home", path: () => "/", expectText: "내 소설 올리기" },
+  { name: "home-signed-in", path: () => "/", user: "a", expectText: "새 원작" },
   { name: "cover", path: (r) => `/w/${r.fixture.originalSlug}`, expectText: "모바일 점검 원작" },
   { name: "chapter", path: (r) => `/w/${r.fixture.originalSlug}/2`, expectText: "2장 시험 장" },
   { name: "workroom", path: (r) => `/w/${r.fixture.originalSlug}/edit?ch=2`, user: "a", expectText: "2장 시험 장" },
@@ -21,6 +22,7 @@ const screens: { name: string; path: (r: Run) => string; user?: "a" | "b"; expec
   { name: "tree", path: (r) => `/w/${r.fixture.originalSlug}/tree`, expectText: "공개 갈래 1개" },
   { name: "notifications", path: () => "/notifications", user: "a", expectText: "공개했습니다" },
   { name: "admin", path: () => "/admin", user: "a", expectText: "열린 신고" },
+  { name: "new", path: () => "/new", user: "a", expectText: "MD 형식 예시" },
   { name: "fork-cover", path: (r) => `/w/${r.fixture.forkSlug}`, expectText: "2장에서" },
   { name: "profile", path: (r) => `/@${r.users.b.handle}`, expectText: "갈래" },
   { name: "terms", path: () => "/terms", expectText: "초안" },
