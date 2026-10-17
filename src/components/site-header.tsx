@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Bell, PenLine } from "lucide-react";
+import { Bell, LibraryBig, PenLine } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -13,10 +13,17 @@ export function SiteHeader() {
         <Link href="/" className="text-lg font-semibold tracking-tight">
           ForkFiction
         </Link>
-        {/* 쿠키를 읽는 부분만 요청 때 그리고, 나머지 헤더는 정적으로 둔다 */}
-        <Suspense fallback={<div className="h-8 w-16" />}>
-          <UserMenu />
-        </Suspense>
+        <div className="flex items-center gap-1">
+          {/* 전체 목록은 로그인과 상관없어 정적으로 그린다. 좁은 화면에서는 아이콘만 보인다. */}
+          <Link href="/works" className={buttonVariants({ variant: "ghost" })} aria-label="전체 목록">
+            <LibraryBig />
+            <span className="hidden sm:inline">전체 목록</span>
+          </Link>
+          {/* 쿠키를 읽는 부분만 요청 때 그리고, 나머지 헤더는 정적으로 둔다 */}
+          <Suspense fallback={<div className="h-8 w-16" />}>
+            <UserMenu />
+          </Suspense>
+        </div>
       </div>
     </header>
   );

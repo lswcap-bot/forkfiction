@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Fragment } from "react";
+import { AdSlot } from "@/components/ad-slot";
 import type { WorkCardData } from "@/lib/discover";
 
 // 홈·프로필의 작품 카드. 갈래면 어디서 갈라졌는지와 한 줄 소개, 정사면 배지를 보여 준다.
@@ -51,16 +53,24 @@ export function WorkCard({ work }: { work: WorkCardData }) {
   );
 }
 
-export function WorkCardGrid({ works, empty }: { works: WorkCardData[]; empty: string }) {
+export function WorkCardGrid({ works, empty, adAfter }: { works: WorkCardData[]; empty: string; adAfter?: number }) {
   if (works.length === 0) {
     return <p className="rounded-lg bg-muted/50 px-4 py-6 text-center text-sm text-muted-foreground">{empty}</p>;
   }
   return (
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {works.map((w) => (
-        <li key={w.id}>
-          <WorkCard work={w} />
-        </li>
+      {works.map((w, i) => (
+        <Fragment key={w.id}>
+          <li>
+            <WorkCard work={w} />
+          </li>
+          {/* 목록 중간 광고 한 칸(F10). 뒤에 카드가 더 있을 때만 넣는다. */}
+          {adAfter !== undefined && i + 1 === adAfter && i + 1 < works.length && (
+            <li className="col-span-full py-2">
+              <AdSlot id="works-list-middle" />
+            </li>
+          )}
+        </Fragment>
       ))}
     </ul>
   );

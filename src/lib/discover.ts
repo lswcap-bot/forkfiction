@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { WORKS_PAGE_SIZE, type WorksQuery } from "@/lib/works-query";
 
 // 홈·프로필 목록(F7). RLS가 읽을 수 있는 작품만 돌려준다. 쿠키를 읽으므로 <Suspense> 안에서 부른다.
 
@@ -18,7 +19,7 @@ export type WorkCardData = {
   star_count: number;
   fork_count: number;
   owner: { handle: string; display_name: string };
-  /** 갈래면 바로 위 부모 제목. 숨겨진 작품이면 null(work_lineage가 가린다) */
+  /** 갈래면 바로 위 부모 제목. 숨겨진 작품이면 null(work_parent_titles가 가린다) */
   parentTitle?: string | null;
   /** 요즘 갈래가 많이 나는 원작: 최근 공개된 갈래 수 */
   recentForks?: number;
@@ -30,18 +31,17 @@ const CARD_COLUMNS =
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
-/** 갈래 카드에 '『부모』 N장에서 갈라짐'을 적으려고 부모 제목을 붙인다(계보와 같은 가림 규칙). */
+/** 갈래 카드에 '『부모』 N장에서 갈라짐'을 적으려고 부모 제목을 붙인다(계보와 같은 가림 규칙).
+ *  work_lineage 뷰는 모든 작품의 계보를 계산하므로, 받은 id의 부모만 읽는 work_parent_titles를 쓴다(한 번에 100개). */
 async function withParentTitles(supabase: Supabase, cards: WorkCardData[]): Promise<WorkCardData[]> {
   const forkIds = cards.filter((c) => c.parent_work_id).map((c) => c.id);
   if (forkIds.length === 0) return cards;
-  const { data, error } = await supabase
-    .from("work_lineage")
-    .select("work_id, ancestor_title")
-    .in("work_id", forkIds)
-    .eq("depth", 1)
-    .returns<{ work_id: string; ancestor_title: string | null }[]>();
-  if (error) throw error;
-  const titles = new Map(data.map((r) => [r.work_id, r.ancestor_title]));
+  const titles = new Map<string, string | null>();
+  for (let i = 0; i < forkIds.length; i += 100) {
+    const { data, error } = await supabase.rpc("work_parent_titles", { p_work_ids: forkIds.slice(i, i + 100) });
+    if (error) throw error;
+    for (const r of (data ?? []) as { work_id: string; parent_title: string | null }[]) titles.set(r.work_id, r.parent_title);
+  }
   return cards.map((c) => (c.parent_work_id ? { ...c, parentTitle: titles.get(c.id) ?? null } : c));
 }
 
@@ -115,4 +115,35 @@ export async function getWorksByOwner(ownerId: string) {
     /** 받은 별: 공개 작품의 별 합 */
     stars: cards.filter((c) => c.visibility === "public").reduce((sum, c) => sum + c.star_count, 0),
   };
+}
+
+const SORT_COLUMN = { new: "first_published_at", stars: "star_count", forks: "fork_count" } as const;
+
+/** 전체 목록 한 쪽: 공개 작품만, 그 쪽의 20개와 전체 개수를 한 번에 가져온다(정렬 인덱스를 탄다). */
+export async function getWorksPage(q: WorksQuery): Promise<{ works: WorkCardData[]; total: number }> {
+  const supabase = await createClient();
+  let query = supabase.from("works").select(CARD_COLUMNS, { count: "exact" }).eq("visibility", "public");
+  if (q.tab === "original") query = query.is("parent_work_id", null);
+  if (q.tab === "fork") query = query.not("parent_work_id", "is", null);
+  // 같은 값이면 최신순, 그다음 id로 끊어 쪽이 바뀌어도 겹치거나 빠지지 않게 한다(정렬 인덱스와 같은 순서)
+  if (q.sort !== "new") query = query.order(SORT_COLUMN[q.sort], { ascending: false });
+  const from = (q.page - 1) * WORKS_PAGE_SIZE;
+  const { data, count, error } = await query
+    .order("first_published_at", { ascending: false })
+    .order("id", { ascending: true })
+    .range(from, from + WORKS_PAGE_SIZE - 1)
+    .returns<WorkCardData[]>();
+  // 마지막 쪽을 넘으면 PostgREST가 416(PGRST103)으로 답한다. 빈 쪽으로 다룬다.
+  if (error?.code === "PGRST103") return { works: [], total: count ?? (await countWorks(q)) };
+  if (error) throw error;
+  return { works: await withParentTitles(supabase, data), total: count ?? 0 };
+}
+
+async function countWorks(q: WorksQuery) {
+  const supabase = await createClient();
+  let query = supabase.from("works").select("id", { count: "exact", head: true }).eq("visibility", "public");
+  if (q.tab === "original") query = query.is("parent_work_id", null);
+  if (q.tab === "fork") query = query.not("parent_work_id", "is", null);
+  const { count } = await query;
+  return count ?? 0;
 }

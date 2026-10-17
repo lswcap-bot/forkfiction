@@ -7,6 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const works = await getSitemapWorks();
   return [
     { url: `${base}/`, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/works`, changeFrequency: "daily", priority: 0.9 },
     { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.1 },
     { url: `${base}/privacy`, changeFrequency: "yearly", priority: 0.1 },
     ...works.flatMap((w) => [

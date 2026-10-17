@@ -5,6 +5,7 @@ import { AdSlot } from "@/components/ad-slot";
 import { buttonVariants } from "@/components/ui/button";
 import { WorkCardGrid } from "@/components/work-card";
 import { getNewOriginals, getTopForks, getTrendingOriginals, TRENDING_DAYS } from "@/lib/discover";
+import { worksHref } from "@/lib/works-query";
 
 // 홈(F7): 올리기 안내, 새 원작, 요즘 갈래가 많이 나는 원작, 별 많은 갈래. 광고는 목록 사이(F10).
 export default function Home() {
@@ -30,31 +31,43 @@ export default function Home() {
         </Link>
       </section>
 
-      <HomeSection title="새 원작">
+      <HomeSection title="새 원작" more={worksHref({ tab: "original", sort: "new", page: 1 })}>
         <NewOriginals />
       </HomeSection>
 
       <AdSlot id="home-list-1" />
 
-      <HomeSection title="요즘 갈래가 많이 나는 원작" note={`최근 ${TRENDING_DAYS}일 동안 공개된 갈래 수`}>
+      <HomeSection
+        title="요즘 갈래가 많이 나는 원작"
+        note={`최근 ${TRENDING_DAYS}일 동안 공개된 갈래 수`}
+        more={worksHref({ tab: "original", sort: "forks", page: 1 })}
+      >
         <TrendingOriginals />
       </HomeSection>
 
       <AdSlot id="home-list-2" />
 
-      <HomeSection title="별 많은 갈래">
+      <HomeSection title="별 많은 갈래" more={worksHref({ tab: "fork", sort: "stars", page: 1 })}>
         <TopForks />
       </HomeSection>
     </main>
   );
 }
 
-function HomeSection({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
+// 칸마다 개수를 제한해 보여 주고, '전체 보기'는 맞는 탭·정렬로 전체 목록을 연다
+function HomeSection({ title, note, more, children }: { title: string; note?: string; more: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
         {note && <p className="text-sm text-muted-foreground">{note}</p>}
+        <Link
+          href={more}
+          aria-label={`${title} 전체 보기`}
+          className="ml-auto text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        >
+          전체 보기
+        </Link>
       </div>
       <Suspense fallback={<div className="h-40 rounded-lg bg-muted/40" />}>{children}</Suspense>
     </section>

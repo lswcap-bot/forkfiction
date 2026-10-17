@@ -23,6 +23,8 @@ const screens: { name: string; path: (r: Run) => string; user?: "a" | "b"; expec
   { name: "notifications", path: () => "/notifications", user: "a", expectText: "공개했습니다" },
   { name: "admin", path: () => "/admin", user: "a", expectText: "열린 신고" },
   { name: "new", path: () => "/new", user: "a", expectText: "MD 형식 예시" },
+  { name: "works", path: () => "/works", expectText: "공개된 작품" },
+  { name: "works-fork-stars", path: () => "/works?tab=fork&sort=stars", expectText: "공개된 작품" },
   { name: "fork-cover", path: (r) => `/w/${r.fixture.forkSlug}`, expectText: "2장에서" },
   { name: "profile", path: (r) => `/@${r.users.b.handle}`, expectText: "갈래" },
   { name: "terms", path: () => "/terms", expectText: "초안" },
