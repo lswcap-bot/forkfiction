@@ -46,7 +46,7 @@ async function NotificationList() {
     .from("notifications")
     .select(
       "id, kind, read_at, created_at, actor:profiles!notifications_actor_id_fkey(display_name), " +
-        "work:works(slug, title, fork_chapter_position, parent:works!works_parent_work_id_fkey(title))",
+        "work:works(slug, title, fork_chapter_position, parent:parent_work_id(title))",
     )
     .order("created_at", { ascending: false })
     .limit(LIST_LIMIT)

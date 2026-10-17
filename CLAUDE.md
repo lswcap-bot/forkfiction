@@ -9,7 +9,8 @@
 - 테스트: Vitest(단위), Playwright(흐름)
 
 ## 명령어
-- npm run dev / npm run build / npm test / npx playwright test
+- npm run dev / npm run build / npm test
+- npx playwright test — 흐름·모바일 375px 테스트. 운영 빌드를 3100번에 띄우고 .env.local의 Supabase를 쓴다. 로그인은 @forkfiction.test 임시 사용자의 쿠키를 직접 넣는 방식이고(tests/e2e/support.ts) 끝나면 지운다. 앱에 테스트용 로그인 경로를 만들지 않는다
 - npm run test:db — .env.local의 Supabase 프로젝트에 임시 사용자를 만들어 RLS·DB 함수를 검사하고 지운다(원격 DB를 쓴다)
 - npm run seed:kalui -- --handle=<필명> [--dry-run] — 『칼의 여행』 개발용 시드. 운영 데이터에는 넣지 않는다
 - npm run seed:forks [-- --reset] — 시드 사용자(seed-*@forkfiction.test)가 "[개발용] 시드 원작"(dev-seed-original)과 갈래 5개를 만든다. 실제 작품·사용자에는 손대지 않는다. --reset은 시드 사용자와 그 작품·수정본을 지운다
@@ -26,6 +27,9 @@
 - 숨김·복구는 admin_hide_work()·admin_restore_work()로만 한다. 복구는 숨기기 직전 상태(hidden_from)로 돌린다.
 - 계보는 숨겨진 조상을 지우지 않고 제목·작가 없이 '숨겨진 작품'으로만 보여 준다(work_lineage).
 - reports는 관리자만 읽는다. 신고자를 작가나 다른 사용자에게 보여 주지 않는다.
+- 가입은 구글로만. 이메일·전화·익명 가입은 auth.users 트리거(forkfiction_signup_guard)가 @forkfiction.test 말고는 막는다.
+- 없는 프로필·작품·장은 proxy(src/lib/supabase/proxy.ts, src/lib/route-check.ts)가 미리 걸러 HTTP 404를 낸다. 새 동적 주소를 만들면 여기도 맞춘다.
+- 약관·처리방침은 전문가 검토 전 초안이다. '초안' 표시를 임의로 떼지 않는다.
 - 계보 표기는 어떤 화면에서도 숨기거나 지울 수 없다.
 - 사용자 MD는 반드시 rehype-sanitize를 거쳐 렌더링한다.
 - service role 키는 서버 코드에서만 쓴다.

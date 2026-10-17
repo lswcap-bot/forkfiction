@@ -1,13 +1,118 @@
 import type { Metadata } from "next";
+import { Article, LegalPage, OPERATOR } from "@/components/legal";
 
-export const metadata: Metadata = { title: "개인정보 처리방침 · ForkFiction" };
+export const metadata: Metadata = { title: "개인정보 처리방침" };
 
-// 7단계(출시 준비)에서 실제 처리방침으로 채운다.
+// 개인정보 처리방침 초안. 출시 전 전문가 검토를 받는다.
+// 지역: Supabase ap-northeast-2(서울, CLI로 확인), Vercel 함수 icn1(서울, vercel.json).
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight">개인정보 처리방침</h1>
-      <p className="text-muted-foreground">준비 중입니다.</p>
-    </main>
+    <LegalPage title="개인정보 처리방침">
+      <p>
+        {OPERATOR.name}(이하 &lsquo;운영자&rsquo;)는 ForkFiction(이하 &lsquo;서비스&rsquo;)을 운영하며 「개인정보 보호법」에 따라 이용자의 개인정보를
+        다음과 같이 처리합니다.
+      </p>
+
+      <Article title="1. 처리하는 개인정보와 목적">
+        <ul>
+          <li>
+            <strong>구글 로그인으로 받는 정보</strong>: 이메일, 이름, 프로필 사진 주소, 구글 계정 식별자
+            <br />
+            목적: 로그인과 본인 확인, 중복 가입 방지, 문의 답변
+          </li>
+          <li>
+            <strong>이용자가 직접 정하는 정보</strong>: 필명, 표시 이름, 소개, 약관 동의 시각
+            <br />
+            목적: 작가 표시, 계보 표기, 프로필
+          </li>
+          <li>
+            <strong>서비스 이용 중 생기는 정보</strong>: 올린 작품과 수정본, 별, 알림, 신고 사유와 내용
+            <br />
+            목적: 서비스 제공, 신고 처리
+          </li>
+          <li>
+            <strong>자동으로 남는 정보</strong>: 접속 IP, 브라우저 정보, 접속 시각, 로그인 세션 쿠키
+            <br />
+            목적: 로그인 유지, 보안, 장애 대응
+          </li>
+        </ul>
+        <p>이메일과 이름은 다른 이용자에게 보이지 않습니다. 필명·표시 이름·소개와 공개한 작품은 누구나 볼 수 있습니다.</p>
+      </Article>
+
+      <Article title="2. 보유 기간과 파기">
+        <ol>
+          <li>개인정보는 탈퇴할 때까지 보유하고, 탈퇴하면 지체 없이 지웁니다.</li>
+          <li>다만 법령이 보관을 정한 정보는 그 기간 동안 보관합니다. 예: 접속 기록 3개월(「통신비밀보호법」).</li>
+          <li>지운 전자 파일은 되살릴 수 없는 방법으로 파기합니다.</li>
+        </ol>
+      </Article>
+
+      <Article title="3. 탈퇴했을 때 남는 것">
+        <ol>
+          <li>탈퇴하면 이메일, 이름, 프로필 사진 주소, 구글 계정 식별자를 지웁니다.</li>
+          <li>이미 공개한 작품과 갈래는 작가가 허락한 CC 라이선스에 따라 남깁니다. 다른 이용자의 갈래와 계보가 끊기지 않게 하기 위해서이며, 작가 이름은 &lsquo;탈퇴한 작가&rsquo;로 바꿔 표시합니다.</li>
+          <li>한 번도 공개하지 않은 임시 저장 작품은 지웁니다.</li>
+          <li>탈퇴 기능을 만들기 전까지는 {OPERATOR.email}로 탈퇴를 요청해 주세요. 본인 확인을 위해 가입한 구글 이메일로 보내 주셔야 합니다.</li>
+        </ol>
+      </Article>
+
+      <Article title="4. 제3자 제공">
+        <p>운영자는 이용자의 개인정보를 제3자에게 제공하지 않습니다. 법령에 따른 요청이 있는 경우는 예외입니다.</p>
+      </Article>
+
+      <Article title="5. 처리 위탁과 국외 이전">
+        <p>서비스는 다음 업체에 개인정보 처리를 맡깁니다. 데이터베이스와 웹 서버는 서울 지역에 두지만, 업체가 국외 법인이므로 그 업체가 국외에서 접근하거나 일부 기록을 국외에 둘 수 있습니다.</p>
+        <ul>
+          <li>
+            Supabase Inc.(미국): 데이터베이스와 로그인 처리. 저장 위치 대한민국 서울(AWS ap-northeast-2). 1항의 모든 정보.
+          </li>
+          <li>
+            Vercel Inc.(미국): 웹사이트 실행과 전송. 서버 실행 위치 대한민국 서울(icn1). 화면 파일은 이용자와 가까운 세계 각지의 전송 거점(CDN)을 거치며,
+            접속 기록(IP, 브라우저 정보, 접속 시각)은 Vercel이 관리하는 국외 서버에 저장될 수 있습니다.
+          </li>
+          <li>Google LLC(미국): 구글 로그인(이메일·이름·프로필 사진 주소를 서비스에 전달). 광고를 시작하면 구글 애드센스(아래 6항).</li>
+        </ul>
+        <p>
+          이전 시기와 방법은 서비스를 이용할 때 네트워크로 전송하는 것이고, 보유 기간은 2항과 같습니다. 국외 이전을 원하지 않으면 가입하지 않거나 탈퇴할 수
+          있으나, 이 경우 서비스를 이용할 수 없습니다.
+        </p>
+      </Article>
+
+      <Article title="6. 쿠키">
+        <ol>
+          <li>서비스는 로그인을 유지하려고 세션 쿠키를 씁니다. 브라우저에서 쿠키를 막으면 로그인할 수 없습니다.</li>
+          <li>글자 크기, 작성 중인 원고 임시 보관은 쿠키가 아니라 이용자 브라우저에만 저장되며 운영자에게 보내지지 않습니다.</li>
+          <li>앞으로 구글 애드센스 광고를 실으면, 구글이 광고를 보여 주려고 쿠키를 쓸 수 있습니다. 그때 이 방침을 고쳐 알립니다.</li>
+        </ol>
+      </Article>
+
+      <Article title="7. 이용자의 권리">
+        <p>
+          이용자는 언제든 자신의 개인정보를 열람·정정·삭제하거나 처리 정지를 요청할 수 있습니다. 표시 이름과 소개는 서비스에서 직접 고칠 수 있고,
+          그 밖의 요청은 {OPERATOR.email}로 받아 10일 안에 처리합니다.
+        </p>
+      </Article>
+
+      <Article title="8. 안전성 확보 조치">
+        <ul>
+          <li>데이터베이스의 모든 표에 행 단위 접근 제어를 걸어, 본인과 권한 있는 사람만 정보에 접근하게 합니다.</li>
+          <li>관리용 비밀 키는 운영자의 관리 도구에서만 쓰고 웹사이트에는 두지 않습니다.</li>
+          <li>모든 통신은 HTTPS로 암호화합니다.</li>
+        </ul>
+      </Article>
+
+      <Article title="9. 개인정보 보호책임자">
+        <p>
+          이름: {OPERATOR.name}
+          <br />
+          연락처: {OPERATOR.email}
+        </p>
+        <p>개인정보 침해에 대한 상담은 개인정보침해신고센터(국번 없이 118), 개인정보분쟁조정위원회(1833-6972)에도 할 수 있습니다.</p>
+      </Article>
+
+      <Article title="10. 처리방침 변경">
+        <p>이 방침을 바꿀 때는 시행 7일 전부터 서비스에 알립니다.</p>
+      </Article>
+    </LegalPage>
   );
 }

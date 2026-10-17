@@ -42,3 +42,8 @@ next-env.d.ts
 
 # Claude Code 로컬 미리보기 설정
 .claude/launch.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/tests/e2e/.auth/

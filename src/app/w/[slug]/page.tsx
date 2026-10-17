@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
@@ -6,14 +7,34 @@ import { AdSlot } from "@/components/ad-slot";
 import { LineageLine } from "@/components/lineage-line";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
-import { aiUsageLabel, CHAPTER_STATES, licenseLabel } from "@/lib/work-meta";
+import { describe, getPublicWork } from "@/lib/public-works";
+import { aiUsageLabel, CHAPTER_STATES, licenseLabel, type AiUsage } from "@/lib/work-meta";
 import { getChapterList, getLineage, getWorkBySlug, hasStarred } from "@/lib/works";
+import { AiUsageField } from "./ai-usage-field";
 import { DeleteWorkButton } from "./delete-work-button";
 import { DraftPanel } from "./draft-panel";
 import { HiddenNotice } from "./hidden-notice";
 import { CanonButton, StarButton } from "./reaction-buttons";
 import { ReportDialog } from "./report-dialog";
 import { WorkTabs } from "./work-tabs";
+
+// 검색·공유용 제목과 소개. 공개 작품만 채우고, 아니면 검색에서 뺀다.
+export async function generateMetadata({ params }: PageProps<"/w/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const work = await getPublicWork(decodeURIComponent(slug));
+  if (!work) return { robots: { index: false } };
+  const title = `『${work.title}』 ${work.owner.display_name}`;
+  const from = work.isFork
+    ? `${work.parentTitle ? `『${work.parentTitle}』` : "숨겨진 작품"} ${work.fork_chapter_position}장에서 갈라진 갈래. `
+    : "";
+  const description = describe(`${from}${(work.isFork ? work.fork_note : work.summary) ?? ""}`) || "ForkFiction에서 읽기";
+  return {
+    title,
+    description,
+    alternates: { canonical: `/w/${work.slug}` },
+    openGraph: { type: "article", title, description, url: `/w/${work.slug}` },
+  };
+}
 
 // 작품 대문: 제목, 작가, 계보 줄, 소개, 라이선스, 별, 장 목록. 탭: 목차 · 갈래 지도
 // 관리자가 숨긴 작품은 작가·관리자만 읽을 수 있고(RLS), 다른 사람에게는 404다.
@@ -103,7 +124,14 @@ async function WorkCover({ params }: Pick<PageProps<"/w/[slug]">, "params">) {
           </div>
           <div className="flex gap-1.5">
             <dt>AI 활용</dt>
-            <dd className="text-foreground">{aiUsageLabel(work.ai_usage)}</dd>
+            <dd className="text-foreground">
+              {isOwner ? (
+                // 갈래는 원작의 표기를 물려받으므로, 공개 전(임시 저장)에 고치라고 한 번 알려 준다
+                <AiUsageField workId={work.id} value={work.ai_usage as AiUsage} inherited={isFork && work.visibility === "draft"} />
+              ) : (
+                aiUsageLabel(work.ai_usage)
+              )}
+            </dd>
           </div>
           <div className="flex gap-1.5">
             <dt>별</dt>

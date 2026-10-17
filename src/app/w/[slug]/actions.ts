@@ -7,7 +7,7 @@ import { forkInputProblem } from "@/lib/fork-input";
 import { validateSlug } from "@/lib/slug";
 import { resolveSlug } from "@/lib/slug-actions";
 import { createClient } from "@/lib/supabase/server";
-import { isReportReason, REPORT_DETAIL_MAX } from "@/lib/work-meta";
+import { isAiUsage, isReportReason, REPORT_DETAIL_MAX } from "@/lib/work-meta";
 
 export type OwnerActionResult = { error: string } | undefined;
 
@@ -169,4 +169,15 @@ export async function reportContent(input: ReportInput): Promise<{ error: string
     return { error: "신고하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
   }
   return { ok: true };
+}
+
+// AI 활용 표기 바꾸기. 갈래는 만들 때 원작의 표기를 물려받으므로 작가가 사실대로 고친다(약관 제7조).
+// 작가 본인만 바꿀 수 있다(RLS works_update_own, 값은 works_ai_usage_values 제약).
+export async function changeAiUsage(workId: string, value: string): Promise<OwnerActionResult> {
+  if (!isAiUsage(value)) return { error: "AI 활용은 없음·일부·대부분 중에서 골라 주세요." };
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("works").update({ ai_usage: value }).eq("id", workId).select("id");
+  if (error) return { error: "AI 활용 표기를 바꾸지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+  if (data.length === 0) return { error: "내 작품만 고칠 수 있습니다." };
+  refresh();
 }

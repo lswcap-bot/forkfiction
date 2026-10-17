@@ -5,7 +5,7 @@ import { getViewer } from "@/lib/auth";
 import { safeNextPath } from "@/lib/safe-next";
 import { OnboardingForm } from "./onboarding-form";
 
-export const metadata: Metadata = { title: "필명 정하기 · ForkFiction" };
+export const metadata: Metadata = { title: "필명 정하기" };
 
 export default function OnboardingPage({ searchParams }: PageProps<"/onboarding">) {
   return (

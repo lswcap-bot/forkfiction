@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getViewer } from "@/lib/auth";
 import { UploadForm } from "./upload-form";
 
-export const metadata: Metadata = { title: "새 작품 올리기 · ForkFiction" };
+export const metadata: Metadata = { title: "새 작품 올리기" };
 
 // 새 작품 올리기. 로그인하고 필명·약관 동의를 마친 사용자만 쓸 수 있다.
 // 광고를 넣지 않는 화면이다(PLAN.md F10).

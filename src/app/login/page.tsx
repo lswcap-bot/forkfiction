@@ -5,7 +5,7 @@ import { getViewer } from "@/lib/auth";
 import { safeNextPath } from "@/lib/safe-next";
 import { GoogleButton } from "./google-button";
 
-export const metadata: Metadata = { title: "로그인 · ForkFiction" };
+export const metadata: Metadata = { title: "로그인" };
 
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (

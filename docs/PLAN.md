@@ -240,7 +240,22 @@ create table chapters (
 - [x] (6단계) 관리자 숨김 함수: `admin_hide_work()`·`admin_restore_work()`가 `is_admin()`을 확인한다. 숨기기 직전 상태를 `hidden_from`에 적어 두고 복구 때 그 상태로 돌린다. 숨기면 열린 신고를 처리됨으로 닫고, 숨김·복구 모두 작가에게 알린다(관리자 이름은 남기지 않음).
 - [x] (6단계, 추가) 숨겨진 작품: 작가·관리자만 읽고 다른 사람에게는 404. 작가에게는 "관리자에 의해 숨겨진 작품입니다" 안내. 다른 작품의 계보에는 자리를 남기고 제목·작가 없이 '숨겨진 작품'으로 표시하며, 그 작품의 갈래는 그대로 둔다.
 - [x] (6단계, 추가) 신고는 관리자만 읽는다(신고자 본인·작가도 못 읽음). 같은 사람이 같은 작품·장에 열린 신고를 두 번 넣지 못한다.
-- [ ] (7단계) 출시 점검: `npm run seed:forks -- --reset` 실행. 5단계의 개발용 시드 원작(`dev-seed-original`)·갈래 5개와 시드 사용자(seed-*@forkfiction.test)가 운영 DB에 있으므로 출시 전에 지운다.
+- [x] (7단계) 출시 점검 중 코드로 끝낸 일: 모바일 375px 점검(`tests/e2e/mobile.spec.ts`), Playwright 흐름 테스트(`tests/e2e/fork-flow.spec.ts`), 약관·처리방침 초안, 메타태그·OG 이미지·sitemap·robots, 404·에러 화면과 없는 프로필·작품·장의 HTTP 404(proxy에서 미리 확인), 이메일 가입 막기(`forkfiction_signup_guard`), 보안 점검, 작품 대문에서 작가가 AI 활용 표기 고치기(갈래는 원작 표기를 물려받으므로). 운영 DB를 바꾸는 정리는 아래 '출시 직전 정리'로 옮겼다.
+
+**출시 직전 정리** (운영 DB·외부 설정을 바꾸는 일. 하나씩 승인받은 뒤 실행한다)
+
+- [ ] 개발용 시드 지우기: `npm run seed:forks -- --reset`. 시드 원작(`dev-seed-original`)·갈래 5개와 시드 사용자 5명(seed-*@forkfiction.test)을 지운다. 『칼의 여행』(`kalui-yeohaeng`)은 운영자가 /new로 올린 실제 원작이므로 그대로 둔다.
+- [ ] 남은 테스트 사용자 확인: ff-test-*·ff-e2e-*@forkfiction.test가 남아 있지 않은지 본다(테스트가 끝나면 지우므로 보통 0명. 7단계 점검 때 0명).
+- [ ] Vercel 환경 변수에서 `SUPABASE_SERVICE_ROLE_KEY`를 지운다. 앱 코드(src/)는 service role 키를 쓰지 않고, 빌드 결과의 브라우저 파일에도 없음을 확인했다. 이 키는 운영자 PC의 scripts·tests에서만 쓴다.
+- [ ] Vercel 함수 지역이 서울(icn1)인지 확인: `vercel.json`의 `regions`가 배포 때 적용된다. 배포 뒤 Vercel 대시보드 Settings → Functions의 Function Region이 Seoul(icn1)로 보이는지 본다.
+- [ ] Vercel 환경 변수 `NEXT_PUBLIC_SITE_URL`을 운영 주소(도메인을 정하면 그 주소)로 넣는다. 메타태그·sitemap·robots의 주소가 된다. `NEXT_PUBLIC_ADS_ENABLED`는 애드센스 승인 전까지 넣지 않는다(꺼짐).
+- [ ] Supabase 대시보드 Authentication → URL Configuration: Site URL과 Redirect URLs에 운영 주소의 `/auth/callback`을 넣는다. Google Cloud OAuth 클라이언트의 승인된 리디렉션 URI는 Supabase 콜백 주소 그대로라 바꿀 필요가 없다(도메인을 바꾸면 승인된 JavaScript 원본만 확인).
+- [ ] 약관·처리방침 전문가 검토 뒤 '초안' 표시를 떼고 시행일(`src/components/legal.tsx`의 `EFFECTIVE_DATE`)을 채운다. 처리방침의 지역은 Supabase ap-northeast-2(서울), Vercel 함수 icn1(서울, `vercel.json`)로 채웠다. 국외 법인 위탁을 국외 이전으로 볼지 함께 검토한다. 부가통신사업 신고 등 운영자 의무도 함께 확인한다.
+- [ ] 애드센스: 원본 콘텐츠가 쌓인 뒤 신청. 승인되면 `AdSlot`에 광고 코드를 넣고 처리방침의 쿠키 항목을 고친다(별도 작업).
+
+**출시 후 할 일**
+
+- [ ] 탈퇴 기능: 지금은 lswcap@naver.com으로 요청받는다. 탈퇴하면 auth 계정(이메일·이름·프로필 사진·구글 식별자)을 지우고, 공개한 작품·갈래는 CC 라이선스에 따라 남기며 작가 이름을 '탈퇴한 작가'로 표시하고, 공개한 적 없는 임시 저장 작품은 지운다(약관 제11조, 처리방침 3항). profiles 행을 남기고 이름만 바꿀지, 작가 없는 작품을 허용할지 설계가 필요하다.
 
 ## 기술 스택과 구조
 

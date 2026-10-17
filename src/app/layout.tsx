@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Serif_KR } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
+import { siteUrl } from "@/lib/public-works";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,8 +22,12 @@ const notoSerifKr = Noto_Serif_KR({
 });
 
 export const metadata: Metadata = {
-  title: "ForkFiction",
-  description: "이 이야기, 여기서부터 당신 버전으로.",
+  metadataBase: new URL(siteUrl()),
+  title: { default: "ForkFiction 포크픽션", template: "%s · ForkFiction" },
+  description: "원작 소설을 장 단위로 읽고, 원하는 장에서 갈라져 나와 자기 버전을 이어 쓰는 소설 플랫폼. 이 이야기, 여기서부터 당신 버전으로.",
+  applicationName: "ForkFiction",
+  openGraph: { type: "website", siteName: "ForkFiction 포크픽션", locale: "ko_KR" },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

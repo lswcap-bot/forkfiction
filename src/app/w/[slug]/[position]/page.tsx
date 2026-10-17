@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
@@ -9,11 +10,26 @@ import { ReadingSize } from "@/components/reading-size";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
 import { splitAtMiddle } from "@/lib/middle-break";
+import { describe, getPublicChapterTitle, getPublicWork } from "@/lib/public-works";
 import { licenseLabel } from "@/lib/work-meta";
 import { countForksAt, getChapter, getChapterList, getLineage, getWorkBySlug } from "@/lib/works";
 import { HiddenNotice } from "../hidden-notice";
 import { ReportDialog } from "../report-dialog";
 import { ForkDialog } from "./fork-dialog";
+
+export async function generateMetadata({ params }: PageProps<"/w/[slug]/[position]">): Promise<Metadata> {
+  const { slug, position } = await params;
+  if (!/^[1-9]\d{0,3}$/.test(position)) return { robots: { index: false } };
+  const decoded = decodeURIComponent(slug);
+  const [work, chapterTitle] = await Promise.all([getPublicWork(decoded), getPublicChapterTitle(decoded, Number(position))]);
+  if (!work || !chapterTitle) return { robots: { index: false } };
+  const title = `${position}장 ${chapterTitle} — 『${work.title}』`;
+  const description =
+    describe(`${work.owner.display_name}의 『${work.title}』 ${position}장. ${(work.isFork ? work.fork_note : work.summary) ?? ""}`) ||
+    "ForkFiction에서 읽기";
+  const url = `/w/${work.slug}/${position}`;
+  return { title, description, alternates: { canonical: url }, openGraph: { type: "article", title, description, url } };
+}
 
 // 장 읽기: 본문, 이전·다음, 글자 크기, 끝에 '여기서 갈라지기'와 '이 장에서 갈라진 갈래 N개'.
 // 광고: 본문 끝('다음 장'과 '여기서 갈라지기' 사이), 긴 장은 본문 중간 문단 경계, 넓은 화면은 오른쪽 여백.
