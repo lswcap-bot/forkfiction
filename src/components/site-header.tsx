@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { Bell } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { UserMenuDropdown } from "./user-menu-dropdown";
 
 export function SiteHeader() {
@@ -40,9 +42,38 @@ async function UserMenu() {
   }
 
   return (
-    <UserMenuDropdown
-      handle={viewer.profile.handle}
-      displayName={viewer.profile.display_name}
-    />
+    <div className="flex items-center gap-1">
+      <NotificationBell />
+      <UserMenuDropdown
+        handle={viewer.profile.handle}
+        displayName={viewer.profile.display_name}
+        isAdmin={viewer.profile.is_admin}
+      />
+    </div>
+  );
+}
+
+// 종 아이콘과 안 읽은 알림 수(F8)
+async function NotificationBell() {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .is("read_at", null);
+  const unread = count ?? 0;
+
+  return (
+    <Link
+      href="/notifications"
+      className={buttonVariants({ variant: "ghost", size: "icon", className: "relative" })}
+      aria-label={unread > 0 ? `알림, 안 읽은 알림 ${unread}개` : "알림"}
+    >
+      <Bell />
+      {unread > 0 && (
+        <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[0.65rem] leading-none font-semibold text-white tabular-nums">
+          {unread > 99 ? "99+" : unread}
+        </span>
+      )}
+    </Link>
   );
 }

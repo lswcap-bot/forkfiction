@@ -237,19 +237,19 @@ describe("notifications", () => {
 });
 
 describe("reports", () => {
-  it("신고는 본인과 관리자만 보고, 처리 상태는 관리자만 바꾼다", async () => {
+  it("신고는 관리자만 보고, 처리 상태는 관리자만 바꾼다", async () => {
     const add = await b.db
       .from("reports")
-      .insert({ reporter_id: b.id, work_id: pub.id, reason: "other", detail: "테스트 신고" })
-      .select("id")
-      .single();
+      .insert({ reporter_id: b.id, work_id: pub.id, reason: "other", detail: "테스트 신고" });
     expect(add.error).toBeNull();
+    const created = await admin.from("reports").select("id").eq("reporter_id", b.id).eq("work_id", pub.id).single();
+    const id = created.data!.id;
 
-    const byOwner = await a.db.from("reports").select("id").eq("id", add.data!.id);
+    const byOwner = await a.db.from("reports").select("id").eq("id", id);
     expect(byOwner.data).toHaveLength(0);
 
-    await b.db.from("reports").update({ status: "resolved" }).eq("id", add.data!.id);
-    const row = await admin.from("reports").select("status").eq("id", add.data!.id).single();
+    await b.db.from("reports").update({ status: "resolved" }).eq("id", id);
+    const row = await admin.from("reports").select("status").eq("id", id).single();
     expect(row.data!.status).toBe("open");
   });
 

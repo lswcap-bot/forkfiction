@@ -1,11 +1,13 @@
 "use server";
 
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { getViewer } from "@/lib/auth";
 import { forkInputProblem } from "@/lib/fork-input";
 import { validateSlug } from "@/lib/slug";
 import { resolveSlug } from "@/lib/slug-actions";
 import { createClient } from "@/lib/supabase/server";
+import { isReportReason, REPORT_DETAIL_MAX } from "@/lib/work-meta";
 
 export type OwnerActionResult = { error: string } | undefined;
 
@@ -110,4 +112,61 @@ export async function deleteWork(workId: string): Promise<OwnerActionResult> {
     return { error: "지우지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
   }
   redirect(`/@${viewer.profile.handle}`);
+}
+
+// 별 주기·거두기. 작품당 한 사람 한 번(stars 기본키), star_count는 트리거가 센다.
+export async function toggleStar(workId: string, on: boolean): Promise<OwnerActionResult> {
+  const viewer = await getViewer();
+  if (!viewer?.profile) return { error: "로그인해야 별을 줄 수 있습니다." };
+
+  const supabase = await createClient();
+  const { error } = on
+    ? await supabase.from("stars").insert({ user_id: viewer.userId, work_id: workId })
+    : await supabase.from("stars").delete().eq("user_id", viewer.userId).eq("work_id", workId);
+  // 이미 준 별을 다시 누른 경우(다른 탭)는 바라던 상태이므로 그대로 둔다
+  if (error && error.code !== "23505") {
+    if (error.code === "42501") return { error: "내 작품이나 공개되지 않은 작품에는 별을 줄 수 없습니다." };
+    return { error: "별을 바꾸지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+  }
+  refresh();
+}
+
+// 정사 인정·해제. 뿌리 원작자만 할 수 있고, DB 함수(set_canon)가 다시 확인한다.
+export async function setCanon(workId: string, value: boolean): Promise<OwnerActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("set_canon", { p_work_id: workId, p_value: value });
+  if (error) {
+    if (error.code === "42501") {
+      return { error: value ? "뿌리 원작자만 공개된 갈래를 정사로 인정할 수 있습니다." : "뿌리 원작자만 정사를 뗄 수 있습니다." };
+    }
+    return { error: "정사를 바꾸지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+  }
+  refresh();
+}
+
+export type ReportInput = { workId: string; chapterId: string | null; reason: string; detail: string };
+
+// 작품·장 신고. 누가 신고했는지는 관리자만 본다(reports는 관리자만 읽는다).
+export async function reportContent(input: ReportInput): Promise<{ error: string } | { ok: true }> {
+  const viewer = await getViewer();
+  if (!viewer) return { error: "로그인해야 신고할 수 있습니다." };
+  if (!viewer.profile) return { error: "필명을 먼저 정해 주세요." };
+  if (!isReportReason(input.reason)) return { error: "신고 사유를 골라 주세요." };
+  const detail = input.detail.trim();
+  if (detail.length > REPORT_DETAIL_MAX) return { error: `내용은 ${REPORT_DETAIL_MAX}자까지 적을 수 있습니다.` };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("reports").insert({
+    reporter_id: viewer.userId,
+    work_id: input.workId,
+    chapter_id: input.chapterId,
+    reason: input.reason,
+    detail: detail || null,
+  });
+  if (error) {
+    if (error.code === "23505") return { error: "이미 신고했습니다. 관리자가 확인하고 있습니다." };
+    if (error.code === "42501") return { error: "신고할 수 없는 작품입니다." };
+    return { error: "신고하지 못했습니다. 잠시 뒤 다시 시도해 주세요." };
+  }
+  return { ok: true };
 }

@@ -6,6 +6,8 @@ export type Profile = {
   handle: string;
   display_name: string;
   bio: string | null;
+  /** /admin에 들어갈 수 있는지. DB 함수도 is_admin()으로 다시 확인한다. */
+  is_admin: boolean;
 };
 
 export type Viewer = {
@@ -28,7 +30,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, handle, display_name, bio")
+    .select("id, handle, display_name, bio, is_admin")
     .eq("id", user.id)
     .maybeSingle<Profile>();
 

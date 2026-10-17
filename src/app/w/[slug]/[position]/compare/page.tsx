@@ -37,7 +37,7 @@ async function CompareView({ params }: Pick<PageProps<"/w/[slug]/[position]/comp
 
   // 계보에서 바로 위 부모(depth 1)가 비교 대상 작품이다
   const parent = lineage.find((l) => l.depth === 1);
-  const parentLabel = parent ? `『${parent.ancestor_title}』` : "원작";
+  const parentLabel = !parent ? "원작" : parent.ancestor_title ? `『${parent.ancestor_title}』` : "숨겨진 작품";
   const back = `/w/${work.slug}/${position}`;
 
   const header = (

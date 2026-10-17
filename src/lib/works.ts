@@ -30,13 +30,15 @@ export type ChapterListItem = { id: string; position: number; state: ChapterStat
 
 export type ChapterContent = ChapterListItem & { body: string };
 
+/** 숨겨진 조상은 그 작가·관리자가 아니면 제목·주소·작가가 null이다(work_lineage). */
 export type LineageItem = {
   depth: number;
-  ancestor_slug: string;
-  ancestor_title: string;
-  ancestor_owner_handle: string;
-  ancestor_owner_display_name: string;
+  ancestor_slug: string | null;
+  ancestor_title: string | null;
+  ancestor_owner_handle: string | null;
+  ancestor_owner_display_name: string | null;
   fork_chapter_position: number | null;
+  ancestor_hidden: boolean;
 };
 
 const WORK_COLUMNS =
@@ -78,12 +80,21 @@ export async function getChapter(workId: string, position: number): Promise<Chap
   return { id: data.id, position: data.position, state: data.state, title: data.head.title, body: data.head.body_md };
 }
 
+/** 지금 사용자가 이 작품에 별을 주었는지. 로그인 전이면 false(stars는 본인 것만 읽힌다). */
+export async function hasStarred(workId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("stars").select("work_id").eq("work_id", workId).maybeSingle();
+  return data !== null;
+}
+
 /** 뿌리 원작부터 이 작품까지. 원작이면 자기 자신 하나뿐이다. */
 export async function getLineage(workId: string): Promise<LineageItem[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("work_lineage")
-    .select("depth, ancestor_slug, ancestor_title, ancestor_owner_handle, ancestor_owner_display_name, fork_chapter_position")
+    .select(
+      "depth, ancestor_slug, ancestor_title, ancestor_owner_handle, ancestor_owner_display_name, fork_chapter_position, ancestor_hidden",
+    )
     .eq("work_id", workId)
     .order("depth", { ascending: false })
     .returns<LineageItem[]>();

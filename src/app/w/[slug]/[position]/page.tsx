@@ -11,6 +11,8 @@ import { getViewer } from "@/lib/auth";
 import { splitAtMiddle } from "@/lib/middle-break";
 import { licenseLabel } from "@/lib/work-meta";
 import { countForksAt, getChapter, getChapterList, getLineage, getWorkBySlug } from "@/lib/works";
+import { HiddenNotice } from "../hidden-notice";
+import { ReportDialog } from "../report-dialog";
 import { ForkDialog } from "./fork-dialog";
 
 // 장 읽기: 본문, 이전·다음, 글자 크기, 끝에 '여기서 갈라지기'와 '이 장에서 갈라진 갈래 N개'.
@@ -47,11 +49,13 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
   const next = chapters[index + 1];
   const halves = splitAtMiddle(chapter.body);
   const base = `/w/${work.slug}`;
+  const isOwner = viewer?.userId === work.owner_id;
 
   return (
     <>
       {/* 본문 폭은 .reading이 40em으로 잡는다(보통 글자 크기에서 45rem) */}
       <article className="flex w-full max-w-[45rem] min-w-0 flex-col gap-8">
+        {work.visibility === "hidden" && <HiddenNotice isOwner={isOwner} />}
         <header className="flex flex-col gap-2">
           <LineageLine lineage={lineage} />
           <p className="text-sm text-muted-foreground">
@@ -118,6 +122,18 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
             <span className="text-sm text-muted-foreground">마지막 장입니다</span>
           )}
         </nav>
+
+        {work.visibility === "public" && !isOwner && (
+          <div className="-mt-4 flex justify-end">
+            <ReportDialog
+              workId={work.id}
+              chapterId={chapter.id}
+              target={`『${work.title}』 ${chapter.position}장`}
+              viewer={!viewer ? "anon" : !viewer.profile ? "onboarding" : "ready"}
+              returnTo={`${base}/${chapter.position}`}
+            />
+          </div>
+        )}
 
         <AdSlot id="chapter-end" />
 

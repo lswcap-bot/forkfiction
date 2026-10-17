@@ -328,10 +328,9 @@ describe("delete_work: 한 번도 공개하지 않은 작품 지우기", () => {
     expect(chapters.data).toHaveLength(0);
   });
 
-  it("공개한 적 없는 갈래를 지우면 부모의 갈래 수가 줄고, 물려받은 원작 수정본은 그대로다", async () => {
+  it("공개한 적 없는 갈래를 지워도 부모의 갈래 수와 물려받은 원작 수정본은 그대로다", async () => {
     const before = (await getWork(original.id)).fork_count;
     const forkId = await fork(b, original.id, 3);
-    expect((await getWork(original.id)).fork_count).toBe(before + 1);
 
     const res = await b.db.rpc("delete_work", { p_work_id: forkId });
     expect(res.error).toBeNull();

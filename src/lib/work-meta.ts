@@ -53,3 +53,20 @@ export function chapterProblem(ch: { title: string; body: string }): string | nu
   }
   return null;
 }
+
+export const REPORT_REASONS = [
+  { value: "plagiarism", label: "표절" },
+  { value: "illegal", label: "불법 콘텐츠" },
+  { value: "sexual_violent", label: "음란·폭력" },
+  { value: "other", label: "기타" },
+] as const;
+export type ReportReason = (typeof REPORT_REASONS)[number]["value"];
+export const REPORT_DETAIL_MAX = 1000;
+
+export function isReportReason(value: unknown): value is ReportReason {
+  return REPORT_REASONS.some((r) => r.value === value);
+}
+
+export function reportReasonLabel(value: string) {
+  return REPORT_REASONS.find((r) => r.value === value)?.label ?? value;
+}

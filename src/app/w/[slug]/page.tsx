@@ -7,12 +7,16 @@ import { LineageLine } from "@/components/lineage-line";
 import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
 import { aiUsageLabel, CHAPTER_STATES, licenseLabel } from "@/lib/work-meta";
-import { getChapterList, getLineage, getWorkBySlug } from "@/lib/works";
+import { getChapterList, getLineage, getWorkBySlug, hasStarred } from "@/lib/works";
 import { DeleteWorkButton } from "./delete-work-button";
 import { DraftPanel } from "./draft-panel";
+import { HiddenNotice } from "./hidden-notice";
+import { CanonButton, StarButton } from "./reaction-buttons";
+import { ReportDialog } from "./report-dialog";
 import { WorkTabs } from "./work-tabs";
 
 // 작품 대문: 제목, 작가, 계보 줄, 소개, 라이선스, 별, 장 목록. 탭: 목차 · 갈래 지도
+// 관리자가 숨긴 작품은 작가·관리자만 읽을 수 있고(RLS), 다른 사람에게는 404다.
 export default function WorkPage({ params }: PageProps<"/w/[slug]">) {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-12">
@@ -28,16 +32,23 @@ async function WorkCover({ params }: Pick<PageProps<"/w/[slug]">, "params">) {
   const work = await getWorkBySlug(decodeURIComponent(slug));
   if (!work) notFound();
 
-  const [chapters, lineage, viewer] = await Promise.all([
+  const [chapters, lineage, viewer, starred] = await Promise.all([
     getChapterList(work.id),
     getLineage(work.id),
     getViewer(),
+    hasStarred(work.id),
   ]);
   const isOwner = viewer?.userId === work.owner_id;
   const isFork = work.parent_work_id !== null;
+  // 필명은 바꿀 수 없으므로 계보 맨 앞(뿌리 원작)의 작가 필명으로 뿌리 원작자를 알아본다
+  const isRootOwner = isFork && !!viewer?.profile && lineage[0]?.ancestor_owner_handle === viewer.profile.handle;
+  const viewerState = !viewer ? "anon" : !viewer.profile ? "onboarding" : "ready";
+  const returnTo = `/w/${work.slug}`;
 
   return (
     <>
+      {work.visibility === "hidden" && <HiddenNotice isOwner={isOwner} />}
+
       <header className="flex flex-col gap-3">
         <LineageLine lineage={lineage} />
         <div className="flex flex-wrap items-center gap-2">
@@ -68,6 +79,23 @@ async function WorkCover({ params }: Pick<PageProps<"/w/[slug]">, "params">) {
           )}
         </div>
         {work.summary && <p className="leading-relaxed whitespace-pre-line">{work.summary}</p>}
+        {work.visibility === "public" && (
+          <div className="flex flex-wrap items-center gap-2">
+            {!isOwner && <StarButton workId={work.id} starred={starred} viewer={viewerState} returnTo={returnTo} />}
+            {/* 정사는 공개된 갈래에만 붙인다. 붙어 있는 배지는 언제든 뗄 수 있다. */}
+            {isRootOwner && <CanonButton workId={work.id} isCanon={work.is_canon} />}
+            {!isOwner && (
+              <ReportDialog
+                workId={work.id}
+                chapterId={null}
+                target={`『${work.title}』`}
+                viewer={viewerState}
+                returnTo={returnTo}
+              />
+            )}
+          </div>
+        )}
+        {isRootOwner && work.is_canon && work.visibility !== "public" && <CanonButton workId={work.id} isCanon />}
         <dl className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
           <div className="flex gap-1.5">
             <dt>라이선스</dt>

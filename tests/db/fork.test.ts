@@ -77,8 +77,9 @@ describe("fork_work", () => {
     expect(copied.data).toHaveLength(0);
   });
 
-  it("원작의 fork_count가 오르지만, 갈래를 만들 때는 알림이 가지 않는다", async () => {
-    expect((await getWork(original.id)).fork_count).toBe(1);
+  it("갈래를 만들 때는 원작의 fork_count도 알림도 바뀌지 않는다", async () => {
+    // fork_count는 공개된 갈래만 센다(social.test.ts)
+    expect((await getWork(original.id)).fork_count).toBe(0);
     // 임시 저장 갈래는 원작자가 읽을 수 없으므로 처음 공개될 때 알린다(edit.test.ts)
     expect(await forkNotifications(a)).toEqual([]);
   });

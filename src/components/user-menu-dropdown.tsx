@@ -14,9 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Props = { handle: string; displayName: string };
+type Props = { handle: string; displayName: string; isAdmin: boolean };
 
-export function UserMenuDropdown({ handle, displayName }: Props) {
+export function UserMenuDropdown({ handle, displayName, isAdmin }: Props) {
   const [pending, startTransition] = useTransition();
 
   return (
@@ -30,6 +30,8 @@ export function UserMenuDropdown({ handle, displayName }: Props) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href={`/@${handle}`} />}>내 프로필</DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/notifications" />}>알림</DropdownMenuItem>
+        {isAdmin && <DropdownMenuItem render={<Link href="/admin" />}>관리</DropdownMenuItem>}
         <DropdownMenuItem
           disabled={pending}
           onClick={() => startTransition(() => signOut())}
