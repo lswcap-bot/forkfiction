@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { ChevronLeft, ChevronRight, GitFork } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AdSlot } from "@/components/ad-slot";
 import { LineageLine } from "@/components/lineage-line";
 import { Markdown } from "@/components/markdown";
 import { ReadingSize } from "@/components/reading-size";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { getViewer } from "@/lib/auth";
 import { splitAtMiddle } from "@/lib/middle-break";
+import { licenseLabel } from "@/lib/work-meta";
 import { countForksAt, getChapter, getChapterList, getLineage, getWorkBySlug } from "@/lib/works";
+import { ForkDialog } from "./fork-dialog";
 
 // 장 읽기: 본문, 이전·다음, 글자 크기, 끝에 '여기서 갈라지기'와 '이 장에서 갈라진 갈래 N개'.
 // 광고: 본문 끝('다음 장'과 '여기서 갈라지기' 사이), 긴 장은 본문 중간 문단 경계, 넓은 화면은 오른쪽 여백.
@@ -30,11 +33,12 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
   const work = await getWorkBySlug(decodeURIComponent(slug));
   if (!work) notFound();
 
-  const [chapter, chapters, lineage, forkCount] = await Promise.all([
+  const [chapter, chapters, lineage, forkCount, viewer] = await Promise.all([
     getChapter(work.id, position),
     getChapterList(work.id),
     getLineage(work.id),
     countForksAt(work.id, position),
+    getViewer(),
   ]);
   if (!chapter) notFound();
 
@@ -105,14 +109,18 @@ async function ChapterView({ params }: Pick<PageProps<"/w/[slug]/[position]">, "
 
         <AdSlot id="chapter-end" />
 
-        {work.allow_fork && (
+        {/* 공개 작품만 갈라질 수 있다(fork_work) */}
+        {work.allow_fork && work.visibility === "public" && (
           <section className="flex flex-col items-center gap-2 rounded-lg bg-muted/40 p-6 text-center">
             <p className="text-sm text-muted-foreground">이 이야기, 여기서부터 당신 버전으로.</p>
-            {/* 갈라지기는 4단계에서 연결한다 */}
-            <Button type="button" variant="outline" disabled title="4단계에서 연결합니다">
-              <GitFork />
-              여기서 갈라지기
-            </Button>
+            <ForkDialog
+              workId={work.id}
+              workTitle={work.title}
+              position={chapter.position}
+              licenseLabel={licenseLabel(work.license)}
+              viewer={!viewer ? "anon" : !viewer.profile ? "onboarding" : "ready"}
+              returnTo={`${base}/${chapter.position}`}
+            />
             <p className="text-sm text-muted-foreground">이 장에서 갈라진 갈래 {forkCount.toLocaleString()}개</p>
           </section>
         )}

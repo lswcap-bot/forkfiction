@@ -17,7 +17,8 @@
 ## 꼭 지킬 규칙
 - revisions는 쌓기만 한다. 수정·삭제 코드를 만들지 않는다.
 - 갈래 생성은 fork_work() DB 함수로만 한다.
-- 새 갈래 알림은 갈래를 만들 때가 아니라 처음 공개될 때 원작자에게 보낸다. (현재 fork_work 안의 알림은 4단계 공개 기능에서 옮긴다. PLAN.md '2단계에서 다음 단계로 넘긴 일' 참고)
+- 새 갈래 알림은 갈래를 만들 때가 아니라 처음 공개될 때 원작자에게 보낸다(works_notify_fork_published 트리거).
+- 장과 수정본은 DB 함수(save_chapter, revert_chapter, add_chapter, delete_chapter, move_chapter)로만 바꾼다. 직접 insert/update/delete 권한은 없다.
 - is_canon은 뿌리 원작자만 set_canon()으로 바꾼다.
 - 계보 표기는 어떤 화면에서도 숨기거나 지울 수 없다.
 - 사용자 MD는 반드시 rehype-sanitize를 거쳐 렌더링한다.

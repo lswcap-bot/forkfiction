@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
+import { PenLine } from "lucide-react";
 import { AdSlot } from "@/components/ad-slot";
 import { LineageLine } from "@/components/lineage-line";
+import { buttonVariants } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
 import { aiUsageLabel, CHAPTER_STATES, licenseLabel } from "@/lib/work-meta";
 import { getChapterList, getLineage, getWorkBySlug } from "@/lib/works";
+import { DeleteWorkButton } from "./delete-work-button";
 import { DraftPanel } from "./draft-panel";
 
 // 작품 대문: 제목, 작가, 계보 줄, 소개, 라이선스, 별, 장 목록. 탭: 목차 · 갈래 지도
@@ -43,12 +46,26 @@ async function WorkCover({ params }: Pick<PageProps<"/w/[slug]">, "params">) {
         </div>
         <h1 className="font-serif text-3xl font-bold tracking-tight">{work.title}</h1>
         {work.fork_note && <p className="text-muted-foreground">{work.fork_note}</p>}
-        <p className="text-sm">
-          <Link href={`/@${work.owner.handle}`} className="font-medium hover:underline">
-            {work.owner.display_name}
-          </Link>{" "}
-          <span className="text-muted-foreground">@{work.owner.handle}</span>
-        </p>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+          <p>
+            <Link href={`/@${work.owner.handle}`} className="font-medium hover:underline">
+              {work.owner.display_name}
+            </Link>{" "}
+            <span className="text-muted-foreground">@{work.owner.handle}</span>
+          </p>
+          {isOwner && (
+            <div className="flex items-center gap-1">
+              <Link href={`/w/${work.slug}/edit`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+                <PenLine />
+                작업실
+              </Link>
+              {/* 한 번도 공개하지 않았고 갈래도 없는 작품만 지울 수 있다(delete_work) */}
+              {work.first_published_at === null && work.fork_count === 0 && (
+                <DeleteWorkButton workId={work.id} title={work.title} isFork={isFork} />
+              )}
+            </div>
+          )}
+        </div>
         {work.summary && <p className="leading-relaxed whitespace-pre-line">{work.summary}</p>}
         <dl className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
           <div className="flex gap-1.5">

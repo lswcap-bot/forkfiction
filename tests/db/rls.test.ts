@@ -117,8 +117,9 @@ describe("chapters", () => {
 
   it("남의 장은 고치거나 지울 수 없다", async () => {
     const before = await getChapters(pub.id);
-    await b.db.from("chapters").update({ position: 50 }).eq("work_id", pub.id);
-    await b.db.from("chapters").delete().eq("work_id", pub.id);
+    const [ch] = before;
+    await expectError(b.db.rpc("move_chapter", { p_chapter_id: ch.id, p_to_position: 2 }), "42501");
+    await expectError(b.db.rpc("delete_chapter", { p_chapter_id: ch.id }), "42501");
     expect(await getChapters(pub.id)).toEqual(before);
   });
 
@@ -127,23 +128,14 @@ describe("chapters", () => {
     expect(res.data).toHaveLength(0);
   });
 
-  it("head는 이 장의 수정본만 가리킬 수 있다", async () => {
+  it("주인도 장을 직접 고치거나 지울 수 없다(장 함수로만)", async () => {
     const [ch1, ch2] = await getChapters(pub.id);
     await expectError(
       a.db.from("chapters").update({ head_revision_id: ch2.head_revision_id }).eq("id", ch1.id),
-      "23514",
+      "42501",
     );
-  });
-
-  it("주인은 장 순서를 바꿀 수 있다", async () => {
-    const extra = await createOriginal(a, { chapters: 2 });
-    const [c1, c2] = await getChapters(extra.id);
-    const shift = await a.db.from("chapters").update({ position: 10 }).eq("id", c1.id);
-    expect(shift.error).toBeNull();
-    const move = await a.db.from("chapters").update({ position: 1 }).eq("id", c2.id);
-    expect(move.error).toBeNull();
-    const after = await getChapters(extra.id);
-    expect(after.map((c) => c.id)).toEqual([c2.id, c1.id]);
+    await expectError(a.db.from("chapters").update({ position: 10 }).eq("id", ch1.id), "42501");
+    await expectError(a.db.from("chapters").delete().eq("id", ch1.id), "42501");
   });
 });
 
@@ -167,34 +159,23 @@ describe("revisions", () => {
     expect(still.data).toHaveLength(1);
   });
 
-  it("주인은 자기 장에 새 수정본을 쌓고 head를 옮긴다", async () => {
-    const [ch] = await getChapters(pub.id);
-    const rev = await a.db
-      .from("revisions")
-      .insert({
-        chapter_id: ch.id,
-        author_id: a.id,
-        title: "1장",
-        body_md: "고친 본문",
-        parent_revision_id: ch.head_revision_id,
-        message: "다듬기",
-      })
-      .select("id")
-      .single();
-    expect(rev.error).toBeNull();
-
-    const move = await a.db.from("chapters").update({ head_revision_id: rev.data!.id }).eq("id", ch.id);
-    expect(move.error).toBeNull();
-
-    const [after] = await getChapters(pub.id);
-    expect(after.head_revision_id).toBe(rev.data!.id);
-    expect(after.state).toBe("new");
-  });
-
-  it("남의 장에는 수정본을 쌓을 수 없다", async () => {
+  it("수정본은 직접 넣을 수 없다(save_chapter로만)", async () => {
     const [ch] = await getChapters(pub.id);
     await expectError(
-      b.db.from("revisions").insert({ chapter_id: ch.id, author_id: b.id, title: "끼어들기", body_md: "..." }),
+      a.db.from("revisions").insert({ chapter_id: ch.id, author_id: a.id, title: "1장", body_md: "몰래" }),
+      "42501",
+    );
+  });
+
+  it("남의 장에는 save_chapter를 못 쓴다", async () => {
+    const [ch] = await getChapters(pub.id);
+    await expectError(
+      b.db.rpc("save_chapter", {
+        p_chapter_id: ch.id,
+        p_title: "끼어들기",
+        p_body_md: "...",
+        p_base_revision_id: ch.head_revision_id,
+      }),
       "42501",
     );
   });

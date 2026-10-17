@@ -143,3 +143,40 @@ export async function expectError(
   if (code) expect(error!.code).toBe(code);
   return error!;
 }
+
+/** 장의 지금 head를 base로 save_chapter를 부른다. 새 head 수정본 id를 돌려준다. */
+export async function saveChapter(
+  user: TestUser,
+  chapterId: string,
+  body: string,
+  opts: { title?: string; message?: string } = {},
+) {
+  const head = await admin
+    .from("chapters")
+    .select("head:revisions!chapters_head_revision_id_fkey(id, title)")
+    .eq("id", chapterId)
+    .single<{ head: { id: string; title: string } }>();
+  if (head.error) throw head.error;
+  const res = await user.db.rpc("save_chapter", {
+    p_chapter_id: chapterId,
+    p_title: opts.title ?? head.data.head.title,
+    p_body_md: body,
+    p_base_revision_id: head.data.head.id,
+    p_message: opts.message ?? null,
+  });
+  if (res.error) throw res.error;
+  return res.data as string;
+}
+
+/** 작품을 공개하거나 임시 저장으로 돌린다 */
+export async function setVisibility(user: TestUser, workId: string, visibility: "draft" | "public") {
+  const res = await user.db.from("works").update({ visibility }).eq("id", workId);
+  if (res.error) throw res.error;
+}
+
+/** 이 사용자가 받은 'fork' 알림 */
+export async function forkNotifications(user: TestUser) {
+  const res = await user.db.from("notifications").select("work_id, actor_id").eq("kind", "fork");
+  if (res.error) throw res.error;
+  return res.data;
+}

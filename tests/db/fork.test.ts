@@ -6,8 +6,10 @@ import {
   createOriginal,
   createTestUser,
   expectError,
+  forkNotifications,
   getChapters,
   getWork,
+  saveChapter,
   type TestUser,
 } from "./helpers";
 
@@ -75,42 +77,24 @@ describe("fork_work", () => {
     expect(copied.data).toHaveLength(0);
   });
 
-  it("원작의 fork_count가 오르고 원작자에게 알림이 간다", async () => {
+  it("원작의 fork_count가 오르지만, 갈래를 만들 때는 알림이 가지 않는다", async () => {
     expect((await getWork(original.id)).fork_count).toBe(1);
-    const notes = await a.db.from("notifications").select("kind, work_id, actor_id").eq("kind", "fork");
-    expect(notes.data).toEqual([{ kind: "fork", work_id: forkB, actor_id: b.id }]);
+    // 임시 저장 갈래는 원작자가 읽을 수 없으므로 처음 공개될 때 알린다(edit.test.ts)
+    expect(await forkNotifications(a)).toEqual([]);
   });
 
   it("원작자가 나중에 고쳐도 갈래의 물려받은 장은 그대로다", async () => {
     const [srcCh1] = await getChapters(original.id);
-    const rev = await a.db
-      .from("revisions")
-      .insert({ chapter_id: srcCh1.id, author_id: a.id, title: "1장", body_md: "원작 개정판" })
-      .select("id")
-      .single();
-    expect(rev.error).toBeNull();
-    await a.db.from("chapters").update({ head_revision_id: rev.data!.id }).eq("id", srcCh1.id);
+    await saveChapter(a, srcCh1.id, "원작 개정판");
 
     const [forkCh1] = await getChapters(forkB);
     expect(forkCh1.head_revision_id).toBe(srcCh1.head_revision_id);
+    expect(forkCh1.state).toBe("inherited");
   });
 
   it("물려받은 장에 새 수정본을 올리면 고친 장이 된다", async () => {
     const [, ch2] = await getChapters(forkB);
-    const rev = await b.db
-      .from("revisions")
-      .insert({
-        chapter_id: ch2.id,
-        author_id: b.id,
-        title: "2장",
-        body_md: "갈래에서 고친 2장",
-        parent_revision_id: ch2.head_revision_id,
-      })
-      .select("id")
-      .single();
-    expect(rev.error).toBeNull();
-    const move = await b.db.from("chapters").update({ head_revision_id: rev.data!.id }).eq("id", ch2.id);
-    expect(move.error).toBeNull();
+    await saveChapter(b, ch2.id, "갈래에서 고친 2장");
 
     const after = (await getChapters(forkB))[1];
     expect(after.state).toBe("modified");
@@ -142,7 +126,8 @@ describe("fork_work", () => {
     expect(lineage.error).toBeNull();
     expect(lineage.data).toEqual([
       { depth: 2, ancestor_id: original.id, ancestor_owner_handle: a.handle, fork_chapter_position: null },
-      { depth: 1, ancestor_id: forkB, ancestor_owner_handle: b.handle, fork_chapter_position: 3 },
+      // 앞 테스트에서 물려받은 2장을 고쳤으므로 갈림점이 3장에서 2장으로 당겨졌다
+      { depth: 1, ancestor_id: forkB, ancestor_owner_handle: b.handle, fork_chapter_position: 2 },
       { depth: 0, ancestor_id: forkC, ancestor_owner_handle: c.handle, fork_chapter_position: 2 },
     ]);
 

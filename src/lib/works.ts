@@ -25,9 +25,9 @@ export type WorkSummary = {
   owner: { handle: string; display_name: string };
 };
 
-export type ChapterListItem = { position: number; state: ChapterState; title: string };
+export type ChapterListItem = { id: string; position: number; state: ChapterState; title: string };
 
-export type ChapterContent = ChapterListItem & { id: string; body: string };
+export type ChapterContent = ChapterListItem & { body: string };
 
 export type LineageItem = {
   depth: number;
@@ -57,12 +57,12 @@ export const getChapterList = cache(async (workId: string): Promise<ChapterListI
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("chapters")
-    .select("position, state, head:revisions!chapters_head_revision_id_fkey(title)")
+    .select("id, position, state, head:revisions!chapters_head_revision_id_fkey(title)")
     .eq("work_id", workId)
     .order("position")
-    .returns<{ position: number; state: ChapterState; head: { title: string } }[]>();
+    .returns<{ id: string; position: number; state: ChapterState; head: { title: string } }[]>();
   if (error) throw error;
-  return data.map((c) => ({ position: c.position, state: c.state, title: c.head.title }));
+  return data.map((c) => ({ id: c.id, position: c.position, state: c.state, title: c.head.title }));
 });
 
 export async function getChapter(workId: string, position: number): Promise<ChapterContent | null> {
@@ -100,4 +100,82 @@ export async function countForksAt(workId: string, position: number): Promise<nu
     .eq("fork_chapter_position", position)
     .eq("visibility", "public");
   return count ?? 0;
+}
+
+export type EditorChapter = ChapterListItem & {
+  body: string;
+  headRevisionId: string;
+  originRevisionId: string | null;
+};
+
+/** 작업실에서 고칠 장. head 수정본 id를 함께 돌려줘 저장할 때 base로 쓴다. */
+export async function getEditorChapter(workId: string, position: number): Promise<EditorChapter | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("chapters")
+    .select("id, position, state, origin_revision_id, head:revisions!chapters_head_revision_id_fkey(id, title, body_md)")
+    .eq("work_id", workId)
+    .eq("position", position)
+    .maybeSingle<{
+      id: string;
+      position: number;
+      state: ChapterState;
+      origin_revision_id: string | null;
+      head: { id: string; title: string; body_md: string };
+    }>();
+  if (!data) return null;
+  return {
+    id: data.id,
+    position: data.position,
+    state: data.state,
+    title: data.head.title,
+    body: data.head.body_md,
+    headRevisionId: data.head.id,
+    originRevisionId: data.origin_revision_id,
+  };
+}
+
+export type HistoryItem = {
+  id: string;
+  title: string;
+  message: string | null;
+  created_at: string;
+  /** 갈라질 때 원작에서 물려받은 수정본 */
+  inherited: boolean;
+};
+
+const HISTORY_LIMIT = 100;
+
+/** 장의 수정 기록. 최근 것부터, 맨 끝에 물려받은 원작 수정본. */
+export async function getChapterHistory(chapter: { id: string; originRevisionId: string | null }): Promise<HistoryItem[]> {
+  const supabase = await createClient();
+  const own = await supabase
+    .from("revisions")
+    .select("id, title, message, created_at")
+    .eq("chapter_id", chapter.id)
+    .order("created_at", { ascending: false })
+    .limit(HISTORY_LIMIT);
+  if (own.error) throw own.error;
+  const items: HistoryItem[] = own.data.map((r) => ({ ...r, inherited: false }));
+
+  if (chapter.originRevisionId) {
+    const origin = await supabase
+      .from("revisions")
+      .select("id, title, message, created_at")
+      .eq("id", chapter.originRevisionId)
+      .maybeSingle();
+    if (origin.data) items.push({ ...origin.data, inherited: true });
+  }
+  return items;
+}
+
+/** 수정본 하나의 제목·본문(기록에서 미리 볼 때) */
+export async function getRevision(revisionId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("revisions")
+    .select("id, title, body_md, message, created_at")
+    .eq("id", revisionId)
+    .maybeSingle();
+  return data;
 }
