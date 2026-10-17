@@ -9,6 +9,7 @@ import {
   getWork,
   setVisibility,
   type TestUser,
+  lineageOf,
 } from "./helpers";
 
 // a: 원작자, b: 갈래 작가, c: 갈래의 갈래 작가, m: 관리자
@@ -149,15 +150,15 @@ describe("계보의 숨겨진 작품", () => {
     await setVisibility(c, leaf, "public");
     await m.db.rpc("admin_hide_work", { p_work_id: mid });
 
-    const lineageAs = async (db: typeof anon) => {
-      const res = await db
-        .from("work_lineage")
-        .select("depth, ancestor_slug, ancestor_title, ancestor_owner_handle, ancestor_owner_display_name, ancestor_hidden")
-        .eq("work_id", leaf)
-        .order("depth", { ascending: false });
-      if (res.error) throw res.error;
-      return res.data;
-    };
+    const lineageAs = (db: typeof anon) =>
+      lineageOf(db, leaf, [
+        "depth",
+        "ancestor_slug",
+        "ancestor_title",
+        "ancestor_owner_handle",
+        "ancestor_owner_display_name",
+        "ancestor_hidden",
+      ]);
 
     const seen = await lineageAs(anon);
     expect(seen).toHaveLength(3);

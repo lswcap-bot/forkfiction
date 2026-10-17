@@ -45,13 +45,8 @@ export async function getPublicWork(slug: string): Promise<PublicWork | null> {
 
   let parentTitle: string | null = null;
   if (data.parent_work_id) {
-    const { data: parent } = await db
-      .from("work_lineage")
-      .select("ancestor_title")
-      .eq("work_id", data.id)
-      .eq("depth", 1)
-      .maybeSingle<{ ancestor_title: string | null }>();
-    parentTitle = parent?.ancestor_title ?? null;
+    const { data: parent } = await db.rpc("work_parent_titles", { p_work_ids: [data.id] });
+    parentTitle = (parent as { parent_title: string | null }[] | null)?.[0]?.parent_title ?? null;
   }
   return {
     slug: data.slug,

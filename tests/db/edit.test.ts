@@ -13,6 +13,7 @@ import {
   saveChapter,
   setVisibility,
   type TestUser,
+  lineageOf,
 } from "./helpers";
 
 // 4단계 규칙: 장 저장·되돌리기, 갈림점 자동 갱신, 공개 때 알림, 갈래 주소, 작품 삭제
@@ -383,12 +384,8 @@ describe("완료 기준: 8장에서 갈라져 8장을 고치고 11장까지 새�
     const notes = (await forkNotifications(a)).filter((n) => n.work_id === forkId);
     expect(notes).toEqual([{ work_id: forkId, actor_id: b.id }]);
 
-    const lineage = await anon
-      .from("work_lineage")
-      .select("depth, ancestor_id, ancestor_owner_handle, fork_chapter_position")
-      .eq("work_id", forkId)
-      .order("depth", { ascending: false });
-    expect(lineage.data).toEqual([
+    const lineage = await lineageOf(anon, forkId, ["depth", "ancestor_id", "ancestor_owner_handle", "fork_chapter_position"]);
+    expect(lineage).toEqual([
       { depth: 1, ancestor_id: original.id, ancestor_owner_handle: a.handle, fork_chapter_position: null },
       { depth: 0, ancestor_id: forkId, ancestor_owner_handle: b.handle, fork_chapter_position: 8 },
     ]);
@@ -400,8 +397,8 @@ describe("완료 기준: 8장에서 갈라져 8장을 고치고 11장까지 새�
     await setVisibility(b, forkId, "public");
     await setVisibility(a, work.id, "draft");
 
-    const lineage = await anon.from("work_lineage").select("ancestor_id").eq("work_id", forkId);
-    expect(lineage.data?.map((l) => l.ancestor_id).sort()).toEqual([work.id, forkId].sort());
+    const lineage = await lineageOf(anon, forkId, ["ancestor_id"]);
+    expect(lineage.map((l) => l.ancestor_id)).toEqual([work.id, forkId]);
     await expectError(b.db.from("works").update({ parent_work_id: null }).eq("id", forkId));
   });
 });

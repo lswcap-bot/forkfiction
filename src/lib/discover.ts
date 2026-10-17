@@ -32,7 +32,7 @@ const CARD_COLUMNS =
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
 /** 갈래 카드에 '『부모』 N장에서 갈라짐'을 적으려고 부모 제목을 붙인다(계보와 같은 가림 규칙).
- *  work_lineage 뷰는 모든 작품의 계보를 계산하므로, 받은 id의 부모만 읽는 work_parent_titles를 쓴다(한 번에 100개). */
+ *  받은 id의 부모만 읽는 work_parent_titles를 쓴다(한 번에 100개). */
 async function withParentTitles(supabase: Supabase, cards: WorkCardData[]): Promise<WorkCardData[]> {
   const forkIds = cards.filter((c) => c.parent_work_id).map((c) => c.id);
   if (forkIds.length === 0) return cards;

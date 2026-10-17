@@ -180,3 +180,22 @@ export async function forkNotifications(user: TestUser) {
   if (res.error) throw res.error;
   return res.data;
 }
+
+type LineageRow = {
+  work_id: string;
+  depth: number;
+  ancestor_id: string;
+  ancestor_slug: string | null;
+  ancestor_title: string | null;
+  ancestor_owner_handle: string | null;
+  ancestor_owner_display_name: string | null;
+  fork_chapter_position: number | null;
+  ancestor_hidden: boolean;
+};
+
+/** 계보(work_lineage_of)를 뿌리부터 읽고, 고른 칸만 남긴다 */
+export async function lineageOf<K extends keyof LineageRow>(db: SupabaseClient, workId: string, fields: K[]) {
+  const res = await db.rpc("work_lineage_of", { p_work_id: workId });
+  if (res.error) throw res.error;
+  return (res.data as LineageRow[]).map((r) => Object.fromEntries(fields.map((f) => [f, r[f]])) as Pick<LineageRow, K>);
+}

@@ -11,6 +11,7 @@ import {
   getWork,
   saveChapter,
   type TestUser,
+  lineageOf,
 } from "./helpers";
 
 // a: 원작자, b: 갈래 작가, c: 갈래의 갈래 작가
@@ -119,13 +120,8 @@ describe("fork_work", () => {
     expect(work.root_work_id).toBe(original.id);
     expect(work.license).toBe("CC-BY-SA-4.0");
 
-    const lineage = await c.db
-      .from("work_lineage")
-      .select("depth, ancestor_id, ancestor_owner_handle, fork_chapter_position")
-      .eq("work_id", forkC)
-      .order("depth", { ascending: false });
-    expect(lineage.error).toBeNull();
-    expect(lineage.data).toEqual([
+    const lineage = await lineageOf(c.db, forkC, ["depth", "ancestor_id", "ancestor_owner_handle", "fork_chapter_position"]);
+    expect(lineage).toEqual([
       { depth: 2, ancestor_id: original.id, ancestor_owner_handle: a.handle, fork_chapter_position: null },
       // 앞 테스트에서 물려받은 2장을 고쳤으므로 갈림점이 3장에서 2장으로 당겨졌다
       { depth: 1, ancestor_id: forkB, ancestor_owner_handle: b.handle, fork_chapter_position: 2 },
@@ -133,8 +129,7 @@ describe("fork_work", () => {
     ]);
 
     // 임시 저장 갈래의 계보는 남에게 보이지 않는다
-    const hidden = await anon.from("work_lineage").select("depth").eq("work_id", forkC);
-    expect(hidden.data).toHaveLength(0);
+    expect(await lineageOf(anon, forkC, ["depth"])).toHaveLength(0);
   });
 
   it("갈래는 라이선스를 바꿀 수 없다", async () => {

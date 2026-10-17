@@ -30,7 +30,7 @@ export type ChapterListItem = { id: string; position: number; state: ChapterStat
 
 export type ChapterContent = ChapterListItem & { body: string };
 
-/** 숨겨진 조상은 그 작가·관리자가 아니면 제목·주소·작가가 null이다(work_lineage). */
+/** 숨겨진 조상은 그 작가·관리자가 아니면 제목·주소·작가가 null이다(work_lineage_of). */
 export type LineageItem = {
   depth: number;
   ancestor_slug: string | null;
@@ -90,16 +90,10 @@ export async function hasStarred(workId: string): Promise<boolean> {
 /** 뿌리 원작부터 이 작품까지. 원작이면 자기 자신 하나뿐이다. */
 export async function getLineage(workId: string): Promise<LineageItem[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("work_lineage")
-    .select(
-      "depth, ancestor_slug, ancestor_title, ancestor_owner_handle, ancestor_owner_display_name, fork_chapter_position, ancestor_hidden",
-    )
-    .eq("work_id", workId)
-    .order("depth", { ascending: false })
-    .returns<LineageItem[]>();
+  // 작품 하나에서 뿌리까지만 거슬러 올라간다(work_lineage_of). 뿌리부터 depth 내림차순으로 온다.
+  const { data, error } = await supabase.rpc("work_lineage_of", { p_work_id: workId });
   if (error) throw error;
-  return data;
+  return (data ?? []) as LineageItem[];
 }
 
 /** 이 작품의 position장에서 갈라진 공개 갈래 수 */

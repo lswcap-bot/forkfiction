@@ -15,7 +15,7 @@
 - npm run seed:kalui -- --handle=<필명> [--dry-run] — 『칼의 여행』 개발용 시드. 운영 데이터에는 넣지 않는다
 - npm run seed:forks [-- --reset] — 시드 사용자(seed-*@forkfiction.test)가 "[개발용] 시드 원작"(dev-seed-original)과 갈래 5개를 만든다. 실제 작품·사용자에는 손대지 않는다. --reset은 시드 사용자와 그 작품·수정본을 지운다
 - npm run admin:set -- --handle=<필명> [--off] — 관리자(profiles.is_admin) 켜고 끄기. service role로 바꾼다
-- DB 변경은 항상 supabase/migrations/의 새 마이그레이션 파일로. 대시보드에서 직접 고치지 않는다.
+- DB 변경은 항상 supabase/migrations/의 새 마이그레이션 파일로. 대시보드에서 직접 고치지 않는다. 새 파일 이름의 시각은 오늘 날짜가 아니라 기존 마이그레이션 중 가장 늦은 것보다 뒤로 붙인다(이미 미래 날짜 파일이 있다). 적용된 파일 이름은 바꾸지 않는다.
 
 ## 꼭 지킬 규칙
 - revisions는 쌓기만 한다. 수정·삭제 코드를 만들지 않는다. 예외: tests/db 정리와 seed:forks --reset은 service role로 테스트·시드 사용자(@forkfiction.test) 범위의 수정본만 지운다.
@@ -25,7 +25,7 @@
 - is_canon은 뿌리 원작자만 set_canon()으로 바꾼다.
 - star_count·fork_count는 트리거가 유지한다. fork_count는 공개된 직접 갈래 수다.
 - 숨김·복구는 admin_hide_work()·admin_restore_work()로만 한다. 복구는 숨기기 직전 상태(hidden_from)로 돌린다.
-- 계보는 숨겨진 조상을 지우지 않고 제목·작가 없이 '숨겨진 작품'으로만 보여 준다(work_lineage).
+- 계보는 숨겨진 조상을 지우지 않고 제목·작가 없이 '숨겨진 작품'으로만 보여 준다(work_lineage_of 함수). 계보는 작품 하나에서 위로만 거슬러 올라가 읽는다. 모든 작품의 계보를 계산하는 뷰·쿼리를 다시 만들지 않는다.
 - reports는 관리자만 읽는다. 신고자를 작가나 다른 사용자에게 보여 주지 않는다.
 - 가입은 구글로만. 이메일·전화·익명 가입은 auth.users 트리거(forkfiction_signup_guard)가 @forkfiction.test 말고는 막는다.
 - 없는 프로필·작품·장은 proxy(src/lib/supabase/proxy.ts, src/lib/route-check.ts)가 미리 걸러 HTTP 404를 낸다. 새 동적 주소를 만들면 여기도 맞춘다.
